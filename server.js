@@ -34,25 +34,29 @@ connection.connect(function(err) {
   }
 });
 
+//return board listen
+app.get("/boardlist", function(req, res){
+  connection.query("SELECT Id FROM board", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
 //render board
 //currently only /b/ and /g/ are there
 app.get("/:type", function(req, res){
   var type = req.params.type;
-  var title;
-  switch(type){
-    case "b":
-      title = "/b/ - Random";
-      break;
-    case "g":
-      title = "/g/ - Technology";
-      break;
-    default:
+
+  connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
+    if(result[0] == undefined){
       res.render("default", { type: type});
       return;
-  }
-  res.render("board", {
-    board: type,
-    title: title
+    }
+
+    res.render("board", {
+      board: type,
+      title: "/" + type + "/ - " + result[0].Title
+    });
   });
 });
 
@@ -67,12 +71,12 @@ app.get("/thread/:type", function(req, res){
         title: title
       });
     } else {
-      res.render("default", { type: type});
+      res.render("default", { type: type });
     }
   });
 });
 
-//posting in threads
+//posting
 app.post("/upload", upload.single("image"), function(req, res){
   console.log("upload request");
 
@@ -81,8 +85,6 @@ app.post("/upload", upload.single("image"), function(req, res){
 
     //get id
     var id = result[0].Id;
-    if(id == null ) id = 0;
-    id++;
 
     //make it so that the database stays clean
     var name = "\"" + req.body.name + "\"";
@@ -94,48 +96,51 @@ app.post("/upload", upload.single("image"), function(req, res){
 
     if(req.body.type == "post"){
       //POSTS
-      //if there's an image upload
-      console.log("post");
-      if(req.file){
-        //get file extention
-        var mime = req.file.mimetype.split("/")[1];
 
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, HasImage) "
+      console.log("post");
+      if(id == null ) id = 1;
+      id++;
+
+      //if there's an image upload
+      if(req.file){
+        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, HasImage) "
                   + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + ", 1)";
+                  + "," + comment + "," + req.body.belong + ", 1)";
         connection.query(query);
-        fs.mkdirSync("public/uploads/");
+
+        //put image in the right spot
+        var mime = req.file.mimetype.split("/")[1];
         fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
       }
 
       //if there is no image upload
       else {
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, HasImage) "
+        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, HasImage) "
                   + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + ", 0)";
+                  + "," + comment + "," + req.body.belong + ", 0)";
         connection.query(query);
       }
 
-      //link to thread
-      var query = "INSERT INTO link (ThreadId, PostId) VALUES (" + req.body.belong
-                 + "," + id + ")";
-      connection.query(query);
-
       //update thread update time
       //some stuff about timezones
-      var time = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      var query = "UPDATE thread SET UpdatedTime=\"" + time + "\" WHERE Id=\""
+      var query = "UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
                   + req.body.belong + "\"";
       connection.query(query);
     }
 
     //THREADS
     else{
+      if(id == null ) id = 0;
+      id++;
       console.log("thread");
       var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board) "
                 + "VALUES (" + id + "," + name + "," + subject
                 + "," + comment + ",\"" + req.body.belong + "\")";
       connection.query(query);
+
+      //threads always have images
+      var mime = req.file.mimetype.split("/")[1];
+      fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
     }
   });
 });

@@ -11,8 +11,9 @@ CREATE TABLE IF NOT EXISTS `DevBoard`.`post` (
   `Id` INT(11) NOT NULL,
   `Name` TEXT NULL,
   `Subject` TEXT NULL,
-	`Comment` TEXT NULL,
+  `Comment` TEXT NULL,
   `CreationDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `Thread` INT(11) NOT NULL,
   `HasImage` BOOLEAN NOT NULL,
   PRIMARY KEY (`Id`)
 );
@@ -24,19 +25,21 @@ CREATE TABLE IF NOT EXISTS `DevBoard`.`thread` (
   `Id` INT(11) NOT NULL,
   `Name` TEXT NULL,
   `Subject` TEXT NULL,
-	`Comment` TEXT NULL,
+  `Comment` TEXT NULL,
   `CreationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Board` TEXT NOT NULL,
   PRIMARY KEY (`Id`)
 );
 
--- Links posts and thread toghether
-DROP TABLE IF EXISTS `DevBoard`.`link` ;
+-- List of boards
+DROP TABLE IF EXISTS `DevBoard`.`board` ;
 
-CREATE TABLE IF NOT EXISTS `DevBoard`.`link` (
-  `Id` INT(11) NOT NULL AUTO_INCREMENT,
-  `ThreadId` INT(11) NOT NULL,
-  `PostId` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `DevBoard`.`board` (
+  `Id` VARCHAR(5) NOT NULL,
+  `Title` TEXT NOT NULL,
   PRIMARY KEY (`Id`)
-)
+);
+
+INSERT INTO board (Id, Title) VALUES ("g", "Technology");
+INSERT INTO board (Id, Title) VALUES ("b", "Random");

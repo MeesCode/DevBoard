@@ -2,16 +2,38 @@
 <html>
   <head>
     <title><%= title %></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="../javascript/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
-  <body>
-    <form method="post" enctype="multipart/form-data" action="/upload">
-      <input type="hidden" name="type" value="thread">
-      <input type="hidden" name="belong" value=<%= board %>>
-      <input type="text" name="name">
-      <input type="text" name="subject">
-      <input type="text" name="comment">
-      <input type="file" name="image">
-      <input type="submit">
-    </form>
+  <body onload="init()">
+
+    <div id="header">
+      <div class="boardlist"></div>
+      <div id="headerImage"></div>
+      <div id="title">
+        <%= title %>
+      </div>
+      <form method="post" enctype="multipart/form-data" action="/upload">
+        <input type="hidden" name="type" value="thread">
+        <input type="hidden" name="belong" value=<%= board %>>
+        <input type="text" name="name">
+        <input type="text" name="subject">
+        <input type="text" name="comment">
+        <input type="file" name="image">
+        <input type="submit">
+      </form>
+    </div>
+
+    <div id="content">
+    </div>
+
+    <div id="footer">
+      <div class="boardlist"></div>
+      <div id="credits">
+        Imageboard based on DevBoard by Mees Brinkhuis.
+      </div>
+    </div>
+
   </body>
 </html>
