@@ -1,0 +1,27 @@
+body{
+  background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
+}
+
+.thread img {
+  width: 250px;
+  max-height: 250px;
+  float: left;
+}
+
+.thread {
+  display: table;
+  background-color: #D6DAF0;
+  padding: 2px;
+  border: 1px solid #B7C5D9;
+  border-top: none;
+  border-left: none;
+}
+
+li {
+  margin-top: 30px;
+  width: 100%;
+}
+
+#footer {
+  clear: left;
+}

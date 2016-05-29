@@ -113,21 +113,21 @@ app.post("/upload", upload.single("image"), function(req, res){
 
       //if there's an image upload
       if(req.file){
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, HasImage) "
+        var mime = req.file.mimetype.split("/")[1];
+        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, Image) "
                   + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + "," + req.body.belong + ", 1)";
+                  + "," + comment + "," + req.body.belong + "," + id+"."+mime + ")";
         connection.query(query);
 
         //put image in the right spot
-        var mime = req.file.mimetype.split("/")[1];
         fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
       }
 
       //if there is no image upload
       else {
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, HasImage) "
+        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread) "
                   + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + "," + req.body.belong + ", 0)";
+                  + "," + comment + "," + req.body.belong + ")";
         connection.query(query);
       }
 
@@ -143,9 +143,10 @@ app.post("/upload", upload.single("image"), function(req, res){
       if(id == null ) id = 0;
       id++;
       console.log("thread");
-      var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board) "
+      var mime = req.file.mimetype.split("/")[1];
+      var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board, Image) "
                 + "VALUES (" + id + "," + name + "," + subject
-                + "," + comment + ",\"" + req.body.belong + "\")";
+                + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
       connection.query(query);
 
       //threads always have images

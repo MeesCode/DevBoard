@@ -20,7 +20,7 @@ function init(board){
     for(var i = 0; i < result.length; i++){
       var li = document.createElement("li");
       li.className = "thread";
-      li.innerHTML = result[i].Id + "<br />" + result[i].Name + "<br />"
+      li.innerHTML = "<img src=\"../uploads/" + result[i].Image + "\"" + result[i].Id + "<br />" + result[i].Name + "<br />"
                    + result[i].Subject + "<br />" + result[i].Comment + "<br />"
                    + result[i].CreationDate;
       document.getElementById("threads").appendChild(li);
