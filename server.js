@@ -36,12 +36,12 @@ app.post("/upload", upload.single("image"), function(req, res){
     if(id == null ) id = 0;
 
     //make it so that the database stays clean
-    var name = req.body.name;
-    var subject = req.body.subject;
-    var comment = req.body.comment;
-    if(name == "") name = "NULL";
-    if(subject == "") subject = "NULL";
-    if(comment == "") comment = "NULL" 
+    var name = "\"" + req.body.name + "\"";
+    var subject = "\"" + req.body.subject + "\"";
+    var comment = "\"" + req.body.comment + "\"";
+    if(name == "\"\"") name = "NULL";
+    if(subject == "\"\"") subject = "NULL";
+    if(comment == "\"\"") comment = "NULL";
 
     //if there's an image upload
     if(req.file){
@@ -49,8 +49,8 @@ app.post("/upload", upload.single("image"), function(req, res){
       var mime = req.file.mimetype.split("/")[1];
 
       var query = "INSERT INTO post (Name, Subject, Comment, HasImage) "
-                + "VALUES (\"" + name + "\",\"" + subject
-                + "\",\"" + comment + "\", 1)";
+                + "VALUES (" + name + "," + subject
+                + "," + comment + ", 1)";
       connection.query(query);
       fs.rename(req.file.path, "public/uploads/"+(id+1)+"."+mime);
     }
@@ -58,8 +58,8 @@ app.post("/upload", upload.single("image"), function(req, res){
     //if there is no image upload
     else {
       var query = "INSERT INTO post (Name, Subject, Comment, HasImage) "
-                + "VALUES (\"" + name + "\",\"" + subject
-                + "\",\"" + comment + "\", 0)";
+                + "VALUES (" + name + "," + subject
+                + "," + comment + ", 0)";
       connection.query(query);
     }
 
