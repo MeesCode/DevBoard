@@ -34,9 +34,18 @@ connection.connect(function(err) {
   }
 });
 
-//return board listen
+//return board list
 app.get("/boardlist", function(req, res){
   connection.query("SELECT Id FROM board", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
+//return threads
+app.get("/threads/:type", function(req, res){
+  connection.query("SELECT * FROM thread WHERE Board=\""
+                  + req.params.type + "\"", function(err, result){
     res.writeHead(200);
     res.end(JSON.stringify(result));
   });
@@ -64,6 +73,7 @@ app.get("/:type", function(req, res){
 app.get("/thread/:type", function(req, res){
   var type = req.params.type;
   var title = "empty";
+
   connection.query("SELECT Id FROM thread WHERE Id=\"" + type + "\"", function(err, result){
     if(result[0] != null){
       res.render("thread", {

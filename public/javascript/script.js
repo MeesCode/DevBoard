@@ -1,6 +1,6 @@
 
 //do initialization stuff
-function init(){
+function init(board){
   //get boardlists on the top and bottom of the page
   $.getJSON("../boardlist", function(result){
     var list = "[ ";
@@ -13,5 +13,17 @@ function init(){
     list += " ]";
     document.getElementsByClassName("boardlist")[0].innerHTML = list;
     document.getElementsByClassName("boardlist")[1].innerHTML = list;
+  });
+
+  //get threads
+  $.getJSON("../threads/" + board, function(result){
+    for(var i = 0; i < result.length; i++){
+      var li = document.createElement("li");
+      li.className = "thread";
+      li.innerHTML = result[i].Id + "<br />" + result[i].Name + "<br />"
+                   + result[i].Subject + "<br />" + result[i].Comment + "<br />"
+                   + result[i].CreationDate;
+      document.getElementById("threads").appendChild(li);
+    }
   });
 }

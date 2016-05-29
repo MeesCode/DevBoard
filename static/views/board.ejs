@@ -6,7 +6,7 @@
     <script src="../javascript/script.js"></script>
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
-  <body onload="init()">
+  <body onload="init('<%= board %>')">
 
     <div id="header">
       <div class="boardlist"></div>
@@ -26,6 +26,8 @@
     </div>
 
     <div id="content">
+      <ul id="threads">
+      </ul>
     </div>
 
     <div id="footer">
