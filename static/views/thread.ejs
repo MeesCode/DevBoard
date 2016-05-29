@@ -1,0 +1,17 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+      <input type="hidden" name="type" value="post">
+      <input type="hidden" name="belong" value=<%= thread %>>
+      <input type="text" name="name">
+      <input type="text" name="subject">
+      <input type="text" name="comment">
+      <input type="file" name="image">
+      <input type="submit">
+    </form>
+  </body>
+</html>
