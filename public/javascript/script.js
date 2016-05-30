@@ -99,8 +99,8 @@ function initBoard(board){
           if(posts[i].Image == undefined){
             posts[i].Image == "joe";
           }
-          var image = "<a href=\"../uploads/" + result[i].Image +"\"><img src=\"../uploads/" + result[i].Image + "\"></a>";
-          var filelink = "File: <u><a href=\"../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
+          var image = "<a href=\"../uploads/" + posts[i].Image +"\"><img src=\"../uploads/" + posts[i].Image + "\"></a>";
+          var filelink = "File: <u><a href=\"../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
           var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
           var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
           var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
@@ -181,8 +181,8 @@ function initThread(board, thread){
             if(posts[i].Image == undefined){
               posts[i].Image == "joe";
             }
-            var image = "<a href=\"../uploads/" + result[i].Image +"\"><img src=\"../uploads/" + result[i].Image + "\"></a>";
-            var filelink = "File: <u><a href=\"../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
+            var image = "<a href=\"../uploads/" + posts[i].Image +"\"><img src=\"../uploads/" + posts[i].Image + "\"></a>";
+            var filelink = "File: <u><a href=\"../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
             var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
             var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
             var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
