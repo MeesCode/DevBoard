@@ -8,8 +8,8 @@ body{
   color: #AF0A0F;
   text-align: center;
   width: 100%;
-  font-size: 12pt;
   font-family: tahoma, sans-serif;
+  letter-spacing: -2px;
 }
 
 #headerImage{
@@ -31,6 +31,19 @@ body{
   color: #34345C;
 }
 
+ul{
+  padding: 20px;
+}
+
+a{
+  color: #34345C;
+}
+
+a:hover{
+  text-decoration: none;
+  color: #DD0000;
+}
+
 hr{
   border: none;
   border-top: 1px solid #B7C5D9;
@@ -42,4 +55,9 @@ hr{
 
 #footer {
   clear: left;
+}
+
+#credits{
+  text-align: center;
+  font-size: 7pt;
 }

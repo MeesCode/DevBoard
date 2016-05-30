@@ -2,7 +2,8 @@
   max-width: 250px;
   max-height: 250px;
   float: left;
-  margin-right: 20px;
+  margin-right: 40px;
+  margin-bottom: 10px;
 }
 
 .thread {
@@ -10,6 +11,10 @@
   border-top: none;
   border-left: none;
   width: 100%;
+}
+
+#posts{
+  padding: 0px;
 }
 
 .thread a{
@@ -34,4 +39,9 @@
 
 .threadReply{
   display: inline;
+}
+
+.threadComment{
+  margin-bottom: 50px;
+  margin-left: 20px;
 }

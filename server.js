@@ -59,6 +59,15 @@ app.get("/threads/:type", function(req, res){
   });
 });
 
+//return posts
+app.get("/posts/:type", function(req, res){
+  connection.query("SELECT * FROM post WHERE Thread=\""
+                  + req.params.type + "\"", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
 //render board
 app.get("/:type", function(req, res){
   var type = req.params.type;
@@ -83,9 +92,14 @@ app.get("/thread/:type", function(req, res){
 
   connection.query("SELECT Id FROM thread WHERE Id=\"" + type + "\"", function(err, result){
     if(result[0] != null){
-      res.render("thread", {
-        thread: type,
-        title: title
+      connection.query("SELECT Board FROM thread WHERE Id=\"" + type + "\"", function(err, result2){
+        connection.query("SELECT Title FROM board WHERE Id=\"" + result2[0].Board + "\"", function(err, result3){
+          res.render("thread", {
+            thread: type,
+            board: result2[0].Board,
+            title: "/" +result2[0].Board + "/ - " + result3[0].Title
+          });
+        });
       });
     } else {
       res.render("default", { type: type });

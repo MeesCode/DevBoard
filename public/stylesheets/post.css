@@ -1,7 +1,9 @@
 .post img {
-  width: 250px;
-  max-height: 250px;
+  width: 125px;
+  max-height: 125px;
   float: left;
+  margin-top: 3px;
+  margin-bottom: 5px;
 }
 
 .post {
@@ -11,4 +13,21 @@
   border: 1px solid #B7C5D9;
   border-top: none;
   border-left: none;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: auto;
+  min-height: 76px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+li::before{
+  content: ">>";
+  position: relative;
+  right: 38px;
+  color: #B7C5D9;
+}
+
+.post p{
+  margin-left: -15px;
 }
