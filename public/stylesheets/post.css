@@ -4,12 +4,14 @@
   float: left;
   margin-top: 3px;
   margin-bottom: 5px;
+  margin-right: 20px !important;
 }
 
 .post {
   display: table;
   background-color: #D6DAF0;
   padding: 2px;
+  padding-top: 5px;
   border: 1px solid #B7C5D9;
   border-top: none;
   border-left: none;

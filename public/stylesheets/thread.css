@@ -2,9 +2,9 @@
   max-width: 250px;
   max-height: 250px;
   float: left;
-  margin-right: 40px;
+  margin-right: 20px;
   margin-bottom: 10px;
-  margin-left: 15px;
+  margin-right: 40px;
 }
 
 .thread {
@@ -43,5 +43,5 @@
 }
 
 .threadComment{
-  margin-left: 20px;
+  display: inline;
 }
