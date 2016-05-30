@@ -1,6 +1,6 @@
 .post img {
-  width: 125px;
-  max-height: 125px;
+  max-width: 125px !important;
+  max-height: 125px !important;
   float: left;
   margin-top: 3px;
   margin-bottom: 5px;
@@ -16,9 +16,16 @@
   margin-top: 4px;
   margin-bottom: 4px;
   width: auto;
-  min-height: 76px;
+  min-height: 61px;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.post:target{
+  background-color: #D6BAD0;
+  border: 1px solid #BA9DBF;
+  border-top: none;
+  border-left: none;
 }
 
 li::before{

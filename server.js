@@ -121,6 +121,7 @@ app.post("/upload", upload.single("image"), function(req, res){
 
   if(req.body.type == "post"){
     //POSTS
+    console.log("post");
 
     //if there's an image upload
     if(req.file){

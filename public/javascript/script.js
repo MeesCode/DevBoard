@@ -48,6 +48,11 @@ function initBoard(board){
     document.getElementById("headerImage").innerHTML = "<img src=\"/../images/headers/" + result + "\">";
   });
 
+  //light up selected post
+  $.get("/header", function(result){
+    document.getElementById("headerImage").innerHTML = "<img src=\"/../images/headers/" + result + "\">";
+  });
+
   //get threads and 5 posts from every thread
   $.getJSON("../threads/" + board, function(result){
     for(var i = 0; i < result.length; i++){
@@ -61,7 +66,7 @@ function initBoard(board){
       if(result[i].Comment == null) result[i].Comment = "";
 
       var image = "<img src=\"../uploads/" + result[i].Image + "\">";
-      var filelink = "File: <a href=\"" + "../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a>";
+      var filelink = "File: <u><a href=\"" + "../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
       var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
       var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
       var date = result[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
@@ -78,9 +83,15 @@ function initBoard(board){
       $.getJSON("../posts/" + result[i].Id, function(posts){
         var postUl = document.createElement("ul");
 
-        for(var i = 0; i < posts.length && i < 5; i++){
+        if(posts.length >= 5){
+          var start = posts.length - 5;
+        } else {
+          var start = 0;
+        }
+        for(var i = start; i < posts.length && i < start + 5; i++){
           var postIl = document.createElement("li");
           postIl.className = "post";
+          postIl.id = posts[i].Id;
 
           if(posts[i].Name == null) posts[i].Name = "Anonymous";
           if(posts[i].Comment == null) posts[i].Comment = "";
@@ -89,10 +100,10 @@ function initBoard(board){
             posts[i].Image == "joe";
           }
           var image = "<img src=\"../uploads/" + posts[i].Image + "\">";
-          var filelink = "File: <a href=\"" + "../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a>";
+          var filelink = "File: <u><a href=\"" + "../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
           var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
           var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-          var id = "No.<a href=\"../thread/" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+          var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
           var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
 
           if(posts[i].Image != null){
@@ -142,7 +153,7 @@ function initThread(board, thread){
         if(result[i].Comment == null) result[i].Comment = "";
 
         var image = "<img src=\"../uploads/" + result[i].Image + "\">";
-        var filelink = "File: <a href=\"" + "../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a>";
+        var filelink = "File: <u><a href=\"" + "../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
         var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
         var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
         var date = result[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
@@ -162,6 +173,7 @@ function initThread(board, thread){
           for(var i = 0; i < posts.length; i++){
             var postIl = document.createElement("li");
             postIl.className = "post";
+            postIl.id = posts[i].Id;
 
             if(posts[i].Name == null) posts[i].Name = "Anonymous";
             if(posts[i].Comment == null) posts[i].Comment = "";
@@ -170,10 +182,10 @@ function initThread(board, thread){
               posts[i].Image == "joe";
             }
             var image = "<img src=\"../uploads/" + posts[i].Image + "\">";
-            var filelink = "File: <a href=\"" + "../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a>";
+            var filelink = "File: <u><a href=\"" + "../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
             var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
             var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-            var id = "No.<a href=\"../thread/" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+            var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
             var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
 
             if(posts[i].Image != null){
