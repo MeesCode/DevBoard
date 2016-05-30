@@ -18,7 +18,7 @@
         <h1><%= title %></h1>
       </div>
       <hr>
-      <form id="form" method="post" enctype="multipart/form-data" action="/upload">
+      <form id="boardForm" method="post" enctype="multipart/form-data" action="/upload">
         <input type="hidden" name="type" value="thread">
         <input type="hidden" name="belong" value=<%= board %>>
         <table id="submitForm">
@@ -36,11 +36,11 @@
             </tr>
             <tr>
               <td>Comment</td>
-              <td><textarea name="comment" form="form"></textarea></td>
+              <td><textarea name="comment" form="boardForm"></textarea></td>
             </tr>
             <tr>
               <td>File</td>
-              <td><input type="file" name="image"></td>
+              <td><input id="selectImage" type="file" name="image"></td>
             </tr>
           </tbody>
         </table>

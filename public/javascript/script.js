@@ -1,4 +1,32 @@
 
+//make sure every thread has an image
+$(function() {
+    $('#boardForm').submit(function() {
+        var input = document.getElementById("selectImage").value;
+        console.log(input);
+        if(input == ""){
+          document.getElementById("boardForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected</p>";
+          return false;
+        }
+        return true;
+    });
+});
+
+//make sure every post has either an image or a comment
+$(function() {
+    $('#threadForm').submit(function() {
+        var input1 = document.getElementById("selectImage").value;
+        var input2 = document.getElementById("threadComment").value;
+        if(input1 == "" && input2 == ""){
+          document.getElementById("threadForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          return false;
+        }
+        return true;
+    });
+});
+
+//NEEDS MASSIVE FUCKING CLEANUP OMG
+
 //do initialization stuff
 function initBoard(board){
   //get boardlists on the top and bottom of the page
@@ -29,7 +57,7 @@ function initBoard(board){
       li.id = result[i].Id;
 
       if(result[i].Subject == null) result[i].Subject = "";
-      if(result[i].Name == null) result[i].Name = "";
+      if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
       var image = "<img src=\"../uploads/" + result[i].Image + "\">";
@@ -110,7 +138,7 @@ function initThread(board, thread){
         li.id = result[i].Id;
 
         if(result[i].Subject == null) result[i].Subject = "";
-        if(result[i].Name == null) result[i].Name = "";
+        if(result[i].Name == null) result[i].Name = "Anonymous";
         if(result[i].Comment == null) result[i].Comment = "";
 
         var image = "<img src=\"../uploads/" + result[i].Image + "\">";

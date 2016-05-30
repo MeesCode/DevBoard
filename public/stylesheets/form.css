@@ -3,6 +3,14 @@
   margin-right: auto;
 }
 
+#boardForm{
+    text-align: center;
+}
+
+#threadForm{
+    text-align: center;
+}
+
 #submitForm td:first-child{
   background-color: #98E;
   color: black;
