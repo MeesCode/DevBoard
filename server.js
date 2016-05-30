@@ -136,6 +136,7 @@ app.post("/upload", upload.single("image"), function(req, res){
 
         //put image in the right spot
         fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
+        res.redirect("/thread/" + req.body.belong);
       });
     }
 
@@ -144,6 +145,7 @@ app.post("/upload", upload.single("image"), function(req, res){
       var query = "INSERT INTO post (Name, Subject, Comment, Thread) "
                 + "VALUES (" + name + "," + subject
                 + "," + comment + "," + req.body.belong + ")";
+      res.redirect("/thread/" + req.body.belong);
       connection.query(query);
     }
 
@@ -152,8 +154,6 @@ app.post("/upload", upload.single("image"), function(req, res){
     var query = "UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
                 + req.body.belong + "\"";
     connection.query(query);
-
-    //remove temporary entries
 
   }
 
@@ -173,6 +173,8 @@ app.post("/upload", upload.single("image"), function(req, res){
                 + "VALUES (" + id + "," + name + "," + subject
                 + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
       connection.query(query);
+
+      res.redirect("/thread/" + id);
 
       //threads always have images
       var mime = req.file.mimetype.split("/")[1];
