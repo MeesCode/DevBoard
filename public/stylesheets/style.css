@@ -1,25 +1,42 @@
 body{
+  font-family: arial;
   background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
 }
 
-.thread img {
-  width: 250px;
-  max-height: 250px;
-  float: left;
-}
-
-.thread {
-  display: table;
-  background-color: #D6DAF0;
-  padding: 2px;
-  border: 1px solid #B7C5D9;
-  border-top: none;
-  border-left: none;
-}
-
-li {
-  margin-top: 30px;
+#title{
+  color: #AF0A0F;
+  text-align: center;
   width: 100%;
+  font-size: 12pt;
+  font-family: tahoma, sans-serif;
+}
+
+#headerImage{
+  width: 100%;
+  text-align: center;
+}
+
+#headerImage img{
+  border: 1px solid #34345C
+}
+
+.boardlist{
+  font-size: 9pt;
+  color: #89A;
+}
+
+.boardlist a{
+  text-decoration: none;
+  color: #34345C;
+}
+
+hr{
+  border: none;
+  border-top: 1px solid #B7C5D9;
+  width: 100%;
+  height: 0px;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
 #footer {

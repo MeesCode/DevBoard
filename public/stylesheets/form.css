@@ -1,0 +1,28 @@
+#submitForm{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#submitForm td:first-child{
+  background-color: #98E;
+  color: black;
+  border: 1px solid black;
+  font-weight: bold;
+}
+
+#submitForm textarea{
+  width: 292px;
+  height: 60px;
+}
+
+#submitForm input{
+  width: 244px;
+}
+
+#submitForm input[type=submit]{
+  width: 43px;
+}
+
+#submitForm tr{
+  width: 323px;
+}

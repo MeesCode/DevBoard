@@ -1,0 +1,14 @@
+.post img {
+  width: 250px;
+  max-height: 250px;
+  float: left;
+}
+
+.post {
+  display: table;
+  background-color: #D6DAF0;
+  padding: 2px;
+  border: 1px solid #B7C5D9;
+  border-top: none;
+  border-left: none;
+}

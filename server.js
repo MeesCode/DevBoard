@@ -34,6 +34,14 @@ connection.connect(function(err) {
   }
 });
 
+//return possible header images
+app.get("/header", function(req, res){
+  fs.readdir("public/images/headers/", function(err, result){
+    res.writeHead(200);
+    res.end(result[Math.round(Math.random() * (result.length-1))]);
+  });
+});
+
 //return board list
 app.get("/boardlist", function(req, res){
   connection.query("SELECT Id FROM board", function(err, result){
@@ -45,7 +53,7 @@ app.get("/boardlist", function(req, res){
 //return threads
 app.get("/threads/:type", function(req, res){
   connection.query("SELECT * FROM thread WHERE Board=\""
-                  + req.params.type + "\"", function(err, result){
+                  + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
     res.writeHead(200);
     res.end(JSON.stringify(result));
   });
@@ -103,14 +111,19 @@ app.post("/upload", upload.single("image"), function(req, res){
 
     //if there's an image upload
     if(req.file){
-      var mime = req.file.mimetype.split("/")[1];
-      var query = "INSERT INTO post (Name, Subject, Comment, Thread, Image) "
-                + "VALUES (" + name + "," + subject
-                + "," + comment + "," + req.body.belong + "," + id+"."+mime + ")";
-      connection.query(query);
+      //get id
+      connection.query("SELECT MAX(Id) AS Id FROM post", function(err, result){
+        var id = result[0].Id;
 
-      //put image in the right spot
-      fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
+        var mime = req.file.mimetype.split("/")[1];
+        var query = "INSERT INTO post (Name, Subject, Comment, Thread, Image) "
+                  + "VALUES (" + name + "," + subject
+                  + "," + comment + "," + req.body.belong + ",\"" + id+"."+mime + "\")";
+        connection.query(query);
+
+        //put image in the right spot
+        fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
+      });
     }
 
     //if there is no image upload

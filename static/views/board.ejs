@@ -5,6 +5,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="../javascript/script.js"></script>
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/post.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/thread.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/form.css">
   </head>
   <body onload="init('<%= board %>')">
 
@@ -12,16 +15,35 @@
       <div class="boardlist"></div>
       <div id="headerImage"></div>
       <div id="title">
-        <%= title %>
+        <h1><%= title %></h1>
       </div>
-      <form method="post" enctype="multipart/form-data" action="/upload">
+      <hr>
+      <form id="form" method="post" enctype="multipart/form-data" action="/upload">
         <input type="hidden" name="type" value="thread">
         <input type="hidden" name="belong" value=<%= board %>>
-        <input type="text" name="name">
-        <input type="text" name="subject">
-        <input type="text" name="comment">
-        <input type="file" name="image">
-        <input type="submit">
+        <table id="submitForm">
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td><input type="text" name="name"></td>
+            </tr>
+            <tr>
+              <td>Subject</td>
+              <td>
+                <input type="text" name="subject">
+                <input type="submit" value="Post">
+              </td>
+            </tr>
+            <tr>
+              <td>Comment</td>
+              <td><textarea name="comment" form="form"></textarea></td>
+            </tr>
+            <tr>
+              <td>File</td>
+              <td><input type="file" name="image"></td>
+            </tr>
+          </tbody>
+        </table>
       </form>
     </div>
 
