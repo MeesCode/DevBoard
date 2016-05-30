@@ -90,59 +90,58 @@ app.get("/thread/:type", function(req, res){
 app.post("/upload", upload.single("image"), function(req, res){
   console.log("upload request");
 
-  //get current highest id
-  connection.query("select MAX(GREATEST(post.Id, thread.Id)) AS Id from thread, post", function(err, result) {
+  //make it so that the database stays clean
+  var name = "\"" + req.body.name + "\"";
+  var subject = "\"" + req.body.subject + "\"";
+  var comment = "\"" + req.body.comment + "\"";
+  if(name == "\"\"") name = "NULL";
+  if(subject == "\"\"") subject = "NULL";
+  if(comment == "\"\"") comment = "NULL";
 
-    //get id
-    var id = result[0].Id;
+  if(req.body.type == "post"){
+    //POSTS
 
-    //make it so that the database stays clean
-    var name = "\"" + req.body.name + "\"";
-    var subject = "\"" + req.body.subject + "\"";
-    var comment = "\"" + req.body.comment + "\"";
-    if(name == "\"\"") name = "NULL";
-    if(subject == "\"\"") subject = "NULL";
-    if(comment == "\"\"") comment = "NULL";
+    //if there's an image upload
+    if(req.file){
+      var mime = req.file.mimetype.split("/")[1];
+      var query = "INSERT INTO post (Name, Subject, Comment, Thread, Image) "
+                + "VALUES (" + name + "," + subject
+                + "," + comment + "," + req.body.belong + "," + id+"."+mime + ")";
+      connection.query(query);
 
-    if(req.body.type == "post"){
-      //POSTS
+      //put image in the right spot
+      fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
+    }
 
-      console.log("post");
-      if(id == null ) id = 1;
-      id++;
-
-      //if there's an image upload
-      if(req.file){
-        var mime = req.file.mimetype.split("/")[1];
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread, Image) "
-                  + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + "," + req.body.belong + "," + id+"."+mime + ")";
-        connection.query(query);
-
-        //put image in the right spot
-        fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
-      }
-
-      //if there is no image upload
-      else {
-        var query = "INSERT INTO post (Id, Name, Subject, Comment, Thread) "
-                  + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + "," + req.body.belong + ")";
-        connection.query(query);
-      }
-
-      //update thread update time
-      //some stuff about timezones
-      var query = "UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
-                  + req.body.belong + "\"";
+    //if there is no image upload
+    else {
+      var query = "INSERT INTO post (Name, Subject, Comment, Thread) "
+                + "VALUES (" + name + "," + subject
+                + "," + comment + "," + req.body.belong + ")";
       connection.query(query);
     }
 
-    //THREADS
-    else{
-      if(id == null ) id = 0;
-      id++;
-      console.log("thread");
+    //update thread update time
+    //some stuff about timezones
+    var query = "UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
+                + req.body.belong + "\"";
+    connection.query(query);
+
+    //remove temporary entries
+
+  }
+
+  //THREADS
+  else{
+    console.log("thread");
+
+    //add temporary thread to posts
+    connection.query("INSERT INTO post (IsThread, Thread) VALUES (TRUE, 0)");
+
+    //get id
+    connection.query("SELECT MAX(Id) AS Id FROM post", function(err, result){
+      var id = result[0].Id;
+
       var mime = req.file.mimetype.split("/")[1];
       var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board, Image) "
                 + "VALUES (" + id + "," + name + "," + subject
@@ -152,6 +151,6 @@ app.post("/upload", upload.single("image"), function(req, res){
       //threads always have images
       var mime = req.file.mimetype.split("/")[1];
       fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
-    }
-  });
+    });
+  }
 });

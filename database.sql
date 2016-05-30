@@ -8,13 +8,14 @@ USE `DevBoard` ;
 DROP TABLE IF EXISTS `DevBoard`.`post` ;
 
 CREATE TABLE IF NOT EXISTS `DevBoard`.`post` (
-  `Id` INT(11) NOT NULL,
+  `Id` INT(11) NOT NULL AUTO_INCREMENT,
   `Name` TEXT NULL,
   `Subject` TEXT NULL,
   `Comment` TEXT NULL,
   `CreationDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `Thread` INT(11) NOT NULL,
   `Image` TEXT NULL,
+  `IsThread` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`Id`)
 );
 
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `DevBoard`.`thread` (
   `CreationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Board` TEXT NOT NULL,
-  `Image` TEXT NULL,
+  `Image` TEXT NOT NULL,
   PRIMARY KEY (`Id`)
 );
 
@@ -44,3 +45,4 @@ CREATE TABLE IF NOT EXISTS `DevBoard`.`board` (
 
 INSERT INTO board (Id, Title) VALUES ("g", "Technology");
 INSERT INTO board (Id, Title) VALUES ("b", "Random");
+INSERT INTO board (Id, Title) VALUES ("meta", "Site Discussion");
