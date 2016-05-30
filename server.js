@@ -34,7 +34,7 @@ connection.connect(function(err) {
   }
 });
 
-//return possible header images
+//return one of the availible header images
 app.get("/header", function(req, res){
   fs.readdir("public/images/headers/", function(err, result){
     res.writeHead(200);
@@ -60,7 +60,6 @@ app.get("/threads/:type", function(req, res){
 });
 
 //render board
-//currently only /b/ and /g/ are there
 app.get("/:type", function(req, res){
   var type = req.params.type;
 
@@ -113,7 +112,7 @@ app.post("/upload", upload.single("image"), function(req, res){
     if(req.file){
       //get id
       connection.query("SELECT MAX(Id) AS Id FROM post", function(err, result){
-        var id = result[0].Id;
+        var id = result[0].Id + 1;
 
         var mime = req.file.mimetype.split("/")[1];
         var query = "INSERT INTO post (Name, Subject, Comment, Thread, Image) "

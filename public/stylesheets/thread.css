@@ -12,6 +12,26 @@
   width: 100%;
 }
 
+.thread a{
+  text-decoration: none;
+}
+
 #threads{
   padding: 0px;
+}
+
+.threadSubject{
+  display: inline;
+  font-weight: bold;
+  color: #0F0C5D;
+}
+
+.threadName{
+  display: inline;
+  font-weight: bold;
+  color: #117743;
+}
+
+.threadReply{
+  display: inline;
 }
