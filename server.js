@@ -169,9 +169,9 @@ app.post("/upload", upload.single("image"), function(req, res){
       var id = result[0].Id;
 
       var mime = req.file.mimetype.split("/")[1];
-      var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board, Image) "
+      var query = "INSERT INTO thread (Id, Name, Subject, Comment, CreationDate, Board, Image) "
                 + "VALUES (" + id + "," + name + "," + subject
-                + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
+                + "," + comment + ", NOW(),\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
       connection.query(query);
 
       res.redirect("/thread/" + id);
