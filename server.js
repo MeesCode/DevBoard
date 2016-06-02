@@ -68,6 +68,24 @@ app.get("/posts/:type", function(req, res){
   });
 });
 
+//render thread
+app.get("/:board/thread/:type", function(req, res){
+  var type = req.params.type;
+  var board = req.params.board;
+
+  connection.query("SELECT Title, thread.Board FROM board, thread WHERE thread.Id=\"" + type + "\" AND board.Id=\"" + board + "\"", function(err, result){
+    if(result[0] != null && result[0] != null && result[0].Board == board){
+      res.render("thread", {
+        thread: type,
+        board: board,
+        title: "/" + board + "/ - " + result[0].Title
+      });
+    } else {
+      res.render("default", { type: type });
+    }
+  });
+});
+
 //render board
 app.get("/:type", function(req, res){
   var type = req.params.type;
@@ -82,28 +100,6 @@ app.get("/:type", function(req, res){
       board: type,
       title: "/" + type + "/ - " + result[0].Title
     });
-  });
-});
-
-//render thread
-app.get("/thread/:type", function(req, res){
-  var type = req.params.type;
-  var title = "empty";
-
-  connection.query("SELECT Id FROM thread WHERE Id=\"" + type + "\"", function(err, result){
-    if(result[0] != null){
-      connection.query("SELECT Board FROM thread WHERE Id=\"" + type + "\"", function(err, result2){
-        connection.query("SELECT Title FROM board WHERE Id=\"" + result2[0].Board + "\"", function(err, result3){
-          res.render("thread", {
-            thread: type,
-            board: result2[0].Board,
-            title: "/" +result2[0].Board + "/ - " + result3[0].Title
-          });
-        });
-      });
-    } else {
-      res.render("default", { type: type });
-    }
   });
 });
 
@@ -130,32 +126,28 @@ app.post("/upload", upload.single("image"), function(req, res){
         var id = result[0].Id + 1;
 
         var mime = req.file.mimetype.split("/")[1];
-        var query = "INSERT INTO post (Name, Subject, Comment, Thread, Image) "
+        connection.query("INSERT INTO post (Name, Subject, Comment, Thread, Image) "
                   + "VALUES (" + name + "," + subject
-                  + "," + comment + "," + req.body.belong + ",\"" + id+"."+mime + "\")";
-        connection.query(query);
+                  + "," + comment + "," + req.body.belong + ",\"" + id+"."+mime + "\")");
 
         //put image in the right spot
         fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
-        res.redirect("/thread/" + req.body.belong);
       });
     }
 
     //if there is no image upload
     else {
-      var query = "INSERT INTO post (Name, Subject, Comment, Thread) "
+      connection.query("INSERT INTO post (Name, Subject, Comment, Thread) "
                 + "VALUES (" + name + "," + subject
-                + "," + comment + "," + req.body.belong + ")";
-      res.redirect("/thread/" + req.body.belong);
-      connection.query(query);
+                + "," + comment + "," + req.body.belong + ")");
     }
 
     //update thread update time
     //some stuff about timezones
-    var query = "UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
-                + req.body.belong + "\"";
-    connection.query(query);
+    connection.query("UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
+                + req.body.belong + "\"");
 
+    res.redirect("/thread/" + req.body.belong);
   }
 
   //THREADS
@@ -170,9 +162,9 @@ app.post("/upload", upload.single("image"), function(req, res){
       var id = result[0].Id;
 
       var mime = req.file.mimetype.split("/")[1];
-      var query = "INSERT INTO thread (Id, Name, Subject, Comment, CreationDate, UpdatedTime, Board, Image) "
+      var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board, Image) "
                 + "VALUES (" + id + "," + name + "," + subject
-                + "," + comment + ", NOW(), NOW(),\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
+                + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
       connection.query(query);
 
       res.redirect("/thread/" + id);

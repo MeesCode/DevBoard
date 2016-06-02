@@ -3,13 +3,13 @@
   <head>
     <title><%= title %></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="../javascript/script.js"></script>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/post.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/thread.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/form.css">
+    <script src="/javascript/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/post.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/thread.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/form.css">
   </head>
-  <body onload="initThread('<%= board %>', '<%= thread %>')">
+  <body onload="init('thread', '<%= board %>', <%= thread %>)">
 
     <div id="header">
       <div class="boardlist"></div>
@@ -44,7 +44,7 @@
     </div>
 
     <div id="content">
-      <ul id="posts">
+      <ul id="threads">
       </ul>
     </div>
     <hr>

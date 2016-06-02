@@ -1,4 +1,7 @@
+//default amount of posts in board
+amount = 5;
 
+//dynamic stuff
 //make sure every thread has an image
 $(function() {
     $('#boardForm').submit(function() {
@@ -14,7 +17,7 @@ $(function() {
 
 //make sure every post has either an image or a comment
 $(function() {
-    $('#threadForm').submit(function() {
+    $("#threadForm").submit(function() {
         var input1 = document.getElementById("selectImage").value;
         var input2 = document.getElementById("threadComment").value;
         if(input1 == "" && input2 == ""){
@@ -25,15 +28,19 @@ $(function() {
     });
 });
 
-//NEEDS MASSIVE FUCKING CLEANUP OMG
+//initialize page
+function init(type, boardId, threadId){
+  getBoardList();
+  getHeaderImage();
+  getThreads(type, boardId, threadId);
+}
 
-//do initialization stuff
-function initBoard(board){
-  //get boardlists on the top and bottom of the page
-  $.getJSON("../boardlist", function(result){
+//get boardlists on the top and bottom of the page
+function getBoardList(){
+  $.getJSON("/boardlist", function(result){
     var list = "[ ";
     for(var i = 0; i < result.length; i++){
-      list += "<a href=\"../" + result[i].Id + "\"> " + result[i].Id +"</a>";
+      list += "<a href=\"/" + result[i].Id + "\"> " + result[i].Id +"</a>";
       if(i+1 < result.length){
         list += " / ";
       }
@@ -42,20 +49,22 @@ function initBoard(board){
     document.getElementsByClassName("boardlist")[0].innerHTML = list;
     document.getElementsByClassName("boardlist")[1].innerHTML = list;
   });
+}
 
-  //get header image
+//get header image
+function getHeaderImage(){
   $.get("/header", function(result){
-    document.getElementById("headerImage").innerHTML = "<img src=\"/../images/headers/" + result + "\">";
+    document.getElementById("headerImage").innerHTML = "<img src=\"/images/headers/" + result + "\">";
   });
+}
 
-  //light up selected post
-  $.get("/header", function(result){
-    document.getElementById("headerImage").innerHTML = "<img src=\"/../images/headers/" + result + "\">";
-  });
-
-  //get threads and 5 posts from every thread
-  $.getJSON("../threads/" + board, function(result){
+//get threads
+function getThreads(type, boardId, threadId){
+  $.getJSON("/threads/" + boardId, function(result){
     for(var i = 0; i < result.length; i++){
+      if(type == "thread" && threadId != result[i].Id){
+        continue;
+      }
       var li = document.createElement("li");
       var hr = document.createElement("hr");
       li.className = "thread";
@@ -65,139 +74,69 @@ function initBoard(board){
       if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
-      var image = "<a href=\"../uploads/" + result[i].Image +"\"><img src=\"../uploads/" + result[i].Image + "\"></a>";
-      var filelink = "File: <u><a href=\"../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
+      var image = "<a href=\"/uploads/" + result[i].Image +"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+      var filelink = "File: <u><a href=\"/uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
       var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
       var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
       var date = result[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-      var id = "No.<a href=\"../thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
-      var reply = "[<a id=\"threadReply\" href=\"../thread/" + result[i].Id + "\">Reply</a>]";
+      var id = "No.<a href=\"/"+boardId+"/thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+      var reply = "[<a id=\"threadReply\" href=\""+boardId+"/thread/" + result[i].Id + "\">Reply</a>]";
       var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
 
-      li.innerHTML = filelink + "<br/>" + image + subject + name + date
-                   + id + reply + "<br/>" + "<br/>" + comment
+      if(type == "board"){
+        li.innerHTML = filelink + "<br/>" + image + subject + name + date
+                     + id + reply + "<br/>" + "<br/>" + comment;
+      }
+      if(type == "thread"){
+        li.innerHTML = filelink + "<br/>" + image + subject + name + date
+                     + id + "<br/>" + "<br/>" + comment;
+      }
 
       document.getElementById("threads").appendChild(hr);
       document.getElementById("threads").appendChild(li);
 
-      $.getJSON("../posts/" + result[i].Id, function(posts){
-        var postUl = document.createElement("ul");
-
-        if(posts.length >= 5){
-          var start = posts.length - 5;
-        } else {
-          var start = 0;
-        }
-        for(var i = start; i < posts.length && i < start + 5; i++){
-          var postIl = document.createElement("li");
-          postIl.className = "post";
-          postIl.id = posts[i].Id;
-
-          if(posts[i].Name == null) posts[i].Name = "Anonymous";
-          if(posts[i].Comment == null) posts[i].Comment = "";
-
-          if(posts[i].Image == undefined){
-            posts[i].Image == "joe";
-          }
-          var image = "<a href=\"../uploads/" + posts[i].Image +"\"><img src=\"../uploads/" + posts[i].Image + "\"></a>";
-          var filelink = "File: <u><a href=\"../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
-          var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
-          var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-          var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
-          var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
-
-          if(posts[i].Image != null){
-            postIl.innerHTML = name + date + id + "<br/>" + filelink + "<br/>" + image + comment
-          } else {
-            postIl.innerHTML = name + date + id + "<br/>" + "<br/>" + comment;
-          }
-          postUl.appendChild(postIl);
-        }
-        document.getElementById(posts[0].Thread).appendChild(postUl);
-      });
+      if(type == "board"){
+        getPosts(result[i].Id, amount);
+      }
+      if(type == "thread"){
+        getPosts(result[i].Id, Number.MAX_SAFE_INTEGER);
+      }
     }
   });
 }
 
-function initThread(board, thread){
-  //get boardlists on the top and bottom of the page
-  $.getJSON("../boardlist", function(result){
-    var list = "[ ";
-    for(var i = 0; i < result.length; i++){
-      list += "<a href=\"../" + result[i].Id + "\"> " + result[i].Id +"</a>";
-      if(i+1 < result.length){
-        list += " / ";
-      }
+//get posts
+function getPosts(thread, amount){
+  $.getJSON("/posts/" + thread, function(posts){
+    var postUl = document.createElement("ul");
+
+    if(posts.length >= amount){
+      var start = posts.length - amount;
+    } else {
+      var start = 0;
     }
-    list += " ]";
-    document.getElementsByClassName("boardlist")[0].innerHTML = list;
-    document.getElementsByClassName("boardlist")[1].innerHTML = list;
-  });
+    for(var i = start; i < posts.length && i < start + amount; i++){
+      var postIl = document.createElement("li");
+      postIl.className = "post";
+      postIl.id = posts[i].Id;
 
-  //get header image
-  $.get("/header", function(result){
-    document.getElementById("headerImage").innerHTML = "<img src=\"/../images/headers/" + result + "\">";
-  });
+      if(posts[i].Name == null) posts[i].Name = "Anonymous";
+      if(posts[i].Comment == null) posts[i].Comment = "";
 
-  //get thread and all posts from thread
-  $.getJSON("../threads/" + board, function(result){
-    for(var i = 0; i < result.length; i++){
-      if(thread == result[i].Id){
-        var li = document.createElement("li");
-        var hr = document.createElement("hr");
-        li.className = "thread";
-        li.id = result[i].Id;
+      var image = "<a href=\"/uploads/" + posts[i].Image +"\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
+      var filelink = "File: <u><a href=\"/uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
+      var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
+      var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
+      var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+      var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
 
-        if(result[i].Subject == null) result[i].Subject = "";
-        if(result[i].Name == null) result[i].Name = "Anonymous";
-        if(result[i].Comment == null) result[i].Comment = "";
-
-        var image = "<a href=\"../uploads/" + result[i].Image +"\"><img src=\"../uploads/" + result[i].Image + "\"></a>";
-        var filelink = "File: <u><a href=\"../uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
-        var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
-        var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
-        var date = result[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-        var id = "No.<a href=\"../thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
-        var reply = "[<a id=\"threadReply\" href=\"../thread/" + result[i].Id + "\">Reply</a>]";
-        var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
-
-        li.innerHTML = filelink + "<br/>" + image + subject + name + date
-                     + id + reply + "<br/>" + "<br/>" + comment
-
-        document.getElementById("posts").appendChild(hr);
-        document.getElementById("posts").appendChild(li);
-
-        $.getJSON("../posts/" + result[i].Id, function(posts){
-          var postUl = document.createElement("ul");
-
-          for(var i = 0; i < posts.length; i++){
-            var postIl = document.createElement("li");
-            postIl.className = "post";
-            postIl.id = posts[i].Id;
-
-            if(posts[i].Name == null) posts[i].Name = "Anonymous";
-            if(posts[i].Comment == null) posts[i].Comment = "";
-
-            if(posts[i].Image == undefined){
-              posts[i].Image == "joe";
-            }
-            var image = "<a href=\"../uploads/" + posts[i].Image +"\"><img src=\"../uploads/" + posts[i].Image + "\"></a>";
-            var filelink = "File: <u><a href=\"../uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
-            var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
-            var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-            var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
-            var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
-
-            if(posts[i].Image != null){
-              postIl.innerHTML = name + date + id + "<br/>" + filelink + "<br/>" + image + comment
-            } else {
-              postIl.innerHTML = name + date + id + "<br/>" + "<br/>" + comment;
-            }
-            postUl.appendChild(postIl);
-          }
-          document.getElementById(posts[0].Thread).appendChild(postUl);
-        });
+      if(posts[i].Image != null){
+        postIl.innerHTML = name + date + id + "<br/>" + filelink + "<br/>" + image + comment;
+      } else {
+        postIl.innerHTML = name + date + id + "<br/>" + "<br/>" + comment;
       }
+      postUl.appendChild(postIl);
     }
+    document.getElementById(thread).appendChild(postUl);
   });
 }

@@ -3,13 +3,13 @@
   <head>
     <title><%= title %></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="../javascript/script.js"></script>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/post.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/thread.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/form.css">
+    <script src="/javascript/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/post.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/thread.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/form.css">
   </head>
-  <body onload="initBoard('<%= board %>')">
+  <body onload="init('board','<%= board %>', null)">
 
     <div id="header">
       <div class="boardlist"></div>

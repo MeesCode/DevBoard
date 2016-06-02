@@ -1,9 +1,30 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>DevBoard - 404 Not Found</title>
+    <title>404</title>
+    <script src="/javascript/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   </head>
-  <body>
-    <%= type %> not found
+  <body onload="getBoardList(), getHeaderImage()">
+
+    <div id="header">
+      <div class="boardlist"></div>
+      <div id="headerImage"></div>
+    </div>
+    
+    <hr>
+    <div style="color: red; text-align: center;" id="content">
+      <h1>Page not found.</h1>
+    </div>
+    <hr>
+
+    <div id="footer">
+      <div class="boardlist"></div>
+      <div id="credits">
+        Imageboard based on DevBoard by Mees Brinkhuis.
+      </div>
+    </div>
+
   </body>
 </html>
