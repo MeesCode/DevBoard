@@ -9,6 +9,17 @@
   margin-bottom: 10px;
 }
 
+.thread video{
+  max-width: 250px;
+  max-height: 250px;
+  float: left;
+  margin-right: 20px;
+  margin-right: 40px;
+  margin-left: 16px;
+  margin-top: 3px;
+  margin-bottom: 10px;
+}
+
 .thread {
   display: table;
   border-top: none;

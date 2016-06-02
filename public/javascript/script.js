@@ -74,7 +74,16 @@ function getThreads(type, boardId, threadId){
       if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
-      var image = "<a href=\"/uploads/" + result[i].Image +"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+      var mime = result[i].Image.split(".")[1];
+
+      if(mime == "webm") {
+        var image = "<video controls>"
+                  + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/webm\"/>"
+                  + "</video>";
+      } else {
+        var image = "<a href=\"/uploads/" + result[i].Image +"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+      }
+
       var filelink = "File: <u><a href=\"/uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
       var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
       var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
@@ -120,10 +129,21 @@ function getPosts(thread, amount){
       postIl.className = "post";
       postIl.id = posts[i].Id;
 
+      if(posts[i].Image != null){
+        var mime = posts[i].Image.split(".")[1];
+      }
+
       if(posts[i].Name == null) posts[i].Name = "Anonymous";
       if(posts[i].Comment == null) posts[i].Comment = "";
 
-      var image = "<a href=\"/uploads/" + posts[i].Image +"\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
+      if(mime == "webm") {
+        var image = "<video controls>"
+                  + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/webm\"/>"
+                  + "</video>";
+      } else {
+        var image = "<a href=\"/uploads/" + posts[i].Image +"\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
+      }
+
       var filelink = "File: <u><a href=\"/uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
       var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
       var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";

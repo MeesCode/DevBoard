@@ -7,6 +7,15 @@
   margin-left: 0px !important;
 }
 
+.post video {
+  max-width: 125px !important;
+  max-height: 125px !important;
+  float: left;
+  margin-top: 3px !important;
+  margin-right: 20px !important;
+  margin-left: 0px !important;
+}
+
 .post {
   display: table;
   background-color: #D6DAF0;
