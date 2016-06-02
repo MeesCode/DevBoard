@@ -76,12 +76,14 @@ function getThreads(type, boardId, threadId){
 
       var mime = result[i].Image.split(".")[1];
 
-      if(mime == "webm") {
-        var image = "<video controls>"
-                  + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/webm\"/>"
+      if(mime == "webm" || mime == "mp4" || mime == "ogg") {
+        var image = "<video controls poster>"
+                  + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video>";
-      } else {
+      } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
         var image = "<a href=\"/uploads/" + result[i].Image +"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+      } else {
+        result[i].Image = null;
       }
 
       var filelink = "File: <u><a href=\"/uploads/" + result[i].Image + "\"/>" +result[i].Image + "</a></u>";
@@ -136,12 +138,14 @@ function getPosts(thread, amount){
       if(posts[i].Name == null) posts[i].Name = "Anonymous";
       if(posts[i].Comment == null) posts[i].Comment = "";
 
-      if(mime == "webm") {
-        var image = "<video controls>"
-                  + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/webm\"/>"
+      if(mime == "webm" || mime == "mp4" || mime == "ogg") {
+        var image = "<video controls poster>"
+                  + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video>";
-      } else {
+      } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
         var image = "<a href=\"/uploads/" + posts[i].Image +"\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
+      } else {
+        posts[i].Image = null;
       }
 
       var filelink = "File: <u><a href=\"/uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
