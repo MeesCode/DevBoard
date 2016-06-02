@@ -3,19 +3,13 @@
   margin-right: auto;
 }
 
-#boardForm{
-    text-align: center;
-}
-
-#threadForm{
-    text-align: center;
-}
-
 #submitForm td:first-child{
   background-color: #98E;
   color: black;
   border: 1px solid black;
   font-weight: bold;
+  font-size: 10pt;
+  width: 80px;
 }
 
 #submitForm textarea{
@@ -33,4 +27,9 @@
 
 #submitForm tr{
   width: 323px;
+  margin: 0px;
+}
+
+table{
+  border-spacing: 1px;
 }

@@ -151,7 +151,9 @@ app.post("/upload", upload.single("image"), function(req, res){
     connection.query("UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
                 + req.body.belong + "\"");
 
-    res.redirect("/thread/" + req.body.belong);
+    connection.query("SELECT Board FROM thread WHERE Id=\"" + req.body.belong + "\"", function(err, result){
+      res.redirect("/" + result[0].Board + "/thread/" + req.body.belong);
+    });
   }
 
   //THREADS
@@ -171,7 +173,7 @@ app.post("/upload", upload.single("image"), function(req, res){
                 + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
       connection.query(query);
 
-      res.redirect("/thread/" + id);
+      res.redirect("/" + req.body.belong + "/thread/" + id);
 
       //threads always have images
       var mime = req.file.mimetype.split("/")[1];
