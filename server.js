@@ -81,7 +81,7 @@ app.get("/:board/thread/:type", function(req, res){
         title: "/" + board + "/ - " + result[0].Title
       });
     } else {
-      res.render("default", { type: type });
+      res.render("default");
     }
   });
 });
@@ -92,7 +92,7 @@ app.get("/:type", function(req, res){
 
   connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
     if(result[0] == undefined){
-      res.render("default", { type: type});
+      res.render("default");
       return;
     }
 
@@ -101,6 +101,10 @@ app.get("/:type", function(req, res){
       title: "/" + type + "/ - " + result[0].Title
     });
   });
+});
+
+app.get("*", function(req, res){
+      res.render("default");
 });
 
 //posting
