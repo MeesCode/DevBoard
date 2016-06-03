@@ -2,6 +2,19 @@
 amount = 5;
 
 //dynamic stuff
+//resize images when you click on them
+function resize(id, index){
+  var element = document.getElementById(id);
+  media = element.getElementsByTagName("*")[index];
+  if(media.style.maxHeight != "100%"){
+    media.style.maxWidth = window.innerWidth - 90;
+    media.style.maxHeight = "100%";
+  } else {
+    media.style.maxWidth = "";
+    media.style.maxHeight = "";
+  }
+}
+
 //make sure every thread has an image
 $(function() {
     $('#boardForm').submit(function() {
@@ -77,11 +90,11 @@ function getThreads(type, boardId, threadId){
       var mime = result[i].Image.split(".")[1];
 
       if(mime == "webm" || mime == "mp4" || mime == "ogg") {
-        var image = "<a href=\"/uploads/" + result[i].Image +"\"><video preload=\"metadata\">"
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"" + result[i].Image +"\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
       } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
-        var image = "<a href=\"/uploads/" + result[i].Image +"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
       }
@@ -139,11 +152,11 @@ function getPosts(thread, amount){
       if(posts[i].Comment == null) posts[i].Comment = "";
 
       if(mime == "webm" || mime == "mp4" || mime == "ogg") {
-        var image = "<a href=\"/uploads/" + posts[i].Image +"\"><video preload=\"metadata\">"
+        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
       } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
-        var image = "<a href=\"/uploads/" + posts[i].Image +"\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
+        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
       }
