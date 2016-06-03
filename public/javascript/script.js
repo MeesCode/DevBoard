@@ -93,7 +93,7 @@ function getThreads(type, boardId, threadId){
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"" + result[i].Image +"\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
-      } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
+      } else if(mime == "webp" || mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
@@ -155,7 +155,7 @@ function getPosts(thread, amount){
         var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
                   + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
-      } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
+      } else if(mime == "webp" || mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
         var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
