@@ -13,14 +13,14 @@ app.set('views', __dirname + '/static/views');
 app.set('view engine', 'ejs');
 
 //create server
-http.createServer(app).listen(8080);
+http.createServer(app).listen(80);
 app.use(express.static('public'));
 
 //set database connection variables
 var connection = mysql.createConnection({
   host     : "localhost",
   user     : "root",
-  password : "toor",
+  password : "merel4840",
   database : "DevBoard"
 });
 
