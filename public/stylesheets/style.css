@@ -4,6 +4,10 @@ body{
   background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
 }
 
+.utils a{
+  text-decoration: none;
+}
+
 #title{
   color: #AF0A0F;
   text-align: center;
@@ -33,6 +37,7 @@ body{
 
 ul{
   padding: 20px;
+  margin-top: 0px;
 }
 
 a{

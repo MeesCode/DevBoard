@@ -103,6 +103,23 @@ app.get("/:type", function(req, res){
   });
 });
 
+//render catalog
+app.get("/:type/catalog", function(req, res){
+  var type = req.params.type;
+
+  connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
+    if(result[0] == undefined){
+      res.render("default");
+      return;
+    }
+
+    res.render("catalog", {
+      board: type,
+      title: "/" + type + "/ - " + result[0].Title
+    });
+  });
+});
+
 app.get("*", function(req, res){
       res.render("default");
 });

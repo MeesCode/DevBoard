@@ -1,0 +1,25 @@
+.thread{
+  height: 320;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  float: left;
+  width: 155px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.thread img{
+  max-width: 150px;
+  max-height: 150px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.25);
+}
+
+.threadComment{
+  max-width: 125px;
+  padding: 15px;
+}
+
+ul{
+  list-style-type: none;
+}

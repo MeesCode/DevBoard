@@ -152,7 +152,7 @@ function getPosts(thread, amount){
       if(posts[i].Comment == null) posts[i].Comment = "";
 
       if(mime == "webm" || mime == "mp4" || mime == "ogg") {
-        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls preload=\"metadata\">"
+        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
                   + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
       } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
