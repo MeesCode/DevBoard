@@ -78,11 +78,13 @@ function getHeaderImage(){
 //get reply and image count per thread
 function getCounter(id){
   $.getJSON("/counter/" + id, function(counter){
-    var thread = document.getElementById(id).getElementsByTagName("ul")[0];
-    thread.innerHTML = "<div class=\"info\">" + counter[0].Posts + " replies and "
-                     + counter[0].Images + " images omitted. "
-                     + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
-                      + thread.innerHTML;
+    if(counter[0].Posts > amount){
+      var thread = document.getElementById(id).getElementsByTagName("ul")[0];
+      thread.innerHTML = "<div class=\"info\">" + (counter[0].Posts - 5) + " replies and "
+                       + counter[0].OmittedImages + " images omitted. "
+                       + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
+                        + thread.innerHTML;
+    }
   });
 }
 
