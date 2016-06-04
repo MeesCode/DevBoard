@@ -58,3 +58,8 @@
 .threadComment{
   display: inline;
 }
+
+.info{
+  font-size: 10pt;
+  color: #707070;
+}

@@ -75,6 +75,17 @@ function getHeaderImage(){
   });
 }
 
+//get reply and image count per thread
+function getCounter(id){
+  $.getJSON("/counter/" + id, function(counter){
+    var thread = document.getElementById(id).getElementsByTagName("ul")[0];
+    thread.innerHTML = "<div class=\"info\">" + counter[0].Posts + " replies and "
+                     + counter[0].Images + " images omitted. "
+                     + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
+                      + thread.innerHTML;
+  });
+}
+
 //get threads
 function getThreads(type, boardId, threadId){
   $.getJSON("/threads/" + boardId, function(result){
@@ -125,6 +136,7 @@ function getThreads(type, boardId, threadId){
 
       if(type == "board"){
         getPosts(result[i].Id, amount);
+        getCounter(result[i].Id);
       }
       if(type == "thread"){
         getPosts(result[i].Id, Number.MAX_SAFE_INTEGER);

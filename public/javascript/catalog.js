@@ -1,9 +1,7 @@
 //get threads
 function getCatalog(boardId){
-  console.log("gotten board request");
   $.getJSON("/threads/" + boardId, function(result){
     for(var i = 0; i < result.length; i++){
-      console.log("gotten board request during");
       var li = document.createElement("li");
       li.className = "thread";
       li.id = result[i].Id;
@@ -24,12 +22,35 @@ function getCatalog(boardId){
         var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><img src=\"/images/placeholder.jpg\"/></a>";
       }
 
-      var subject = "<b>" + result[i].Subject + " " +"</b>";
+      var subject = "<b>" + result[i].Subject + " </b>";
 
-      li.innerHTML = image + "<br/>" + subject + result[i].Comment;
-
+      li.innerHTML = image + "<span class=\"counter\"></span>" + subject + result[i].Comment;
       document.getElementById("threads").appendChild(li);
+
+      getCounter(result[i].Id);
     }
-    console.log("gotten board request ended");
+  });
+}
+
+function getCounter(id){
+  $.getJSON("/counter/" + id, function(counter){
+    var thread = document.getElementById(id).getElementsByTagName("span")[0];
+    thread.innerHTML += "<div class=\"info\">R: <b>" + counter[0].Posts + "</b> / I: <b>" + counter[0].Images + "</b></div>";
+  });
+}
+
+//get boardlists on the top and bottom of the page
+function getBoardListCatalog(){
+  $.getJSON("/boardlist", function(result){
+    var list = "[ ";
+    for(var i = 0; i < result.length; i++){
+      list += "<a href=\"/" + result[i].Id + "/catalog\"> " + result[i].Id +"</a>";
+      if(i+1 < result.length){
+        list += " / ";
+      }
+    }
+    list += " ]";
+    document.getElementsByClassName("boardlist")[0].innerHTML = list;
+    document.getElementsByClassName("boardlist")[1].innerHTML = list;
   });
 }

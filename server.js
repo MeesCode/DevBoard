@@ -34,6 +34,15 @@ connection.connect(function(err) {
   }
 });
 
+//return amount of replies and images to in thread
+app.get("/counter/:thread", function(req, res){
+  connection.query("SELECT COUNT(Id) AS Posts, COUNT(Image) AS Images FROM post "
+                 + "WHERE Thread=" + req.params.thread , function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
 //return one of the availible header images
 app.get("/header", function(req, res){
   fs.readdir("public/images/headers/", function(err, result){
@@ -73,7 +82,8 @@ app.get("/:board/thread/:type", function(req, res){
   var type = req.params.type;
   var board = req.params.board;
 
-  connection.query("SELECT Title, thread.Board FROM board, thread WHERE thread.Id=\"" + type + "\" AND board.Id=\"" + board + "\"", function(err, result){
+  connection.query("SELECT Title, thread.Board FROM board, thread "
+                 + "WHERE thread.Id=\"" + type + "\" AND board.Id=\"" + board + "\"", function(err, result){
     if(result[0] != null && result[0] != null && result[0].Board == board){
       res.render("thread", {
         thread: type,
