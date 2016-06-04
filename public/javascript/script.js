@@ -1,6 +1,10 @@
 //default amount of posts in board
 amount = 5;
 
+//displayed file formats
+imageFormats = ["svg", "bmp", "jpg", "jpeg", "gif", "png", "webp"];
+videoFormats = ["mp4", "ogg", "webm"];
+
 //dynamic stuff
 //resize images when you click on them
 function resize(id, index){
@@ -89,11 +93,11 @@ function getThreads(type, boardId, threadId){
 
       var mime = result[i].Image.split(".")[1];
 
-      if(mime == "webm" || mime == "mp4" || mime == "ogg") {
+      if(videoFormats.indexOf(mime) != -1) {
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"" + result[i].Image +"\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
-      } else if(mime == "webp" || mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
+      } else if(imageFormats.indexOf(mime) != -1){
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
@@ -151,11 +155,11 @@ function getPosts(thread, amount){
       if(posts[i].Name == null) posts[i].Name = "Anonymous";
       if(posts[i].Comment == null) posts[i].Comment = "";
 
-      if(mime == "webm" || mime == "mp4" || mime == "ogg") {
+      if(videoFormats.indexOf(mime) != -1) {
         var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
                   + "<source src=\"/uploads/" + posts[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
-      } else if(mime == "webp" || mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
+      } else if(imageFormats.indexOf(mime) != -1){
         var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><img src=\"/uploads/" + posts[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";

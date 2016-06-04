@@ -14,14 +14,14 @@ function getCatalog(boardId){
 
       var mime = result[i].Image.split(".")[1];
 
-      if(mime == "webm" || mime == "mp4" || mime == "ogg") {
+      if(videoFormats.indexOf(mime) != -1) {
         var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><video preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
-      } else if(mime == "jpeg" || mime == "gif" ||mime == "png" ||mime == "svg" || mime == "bmp"){
+      } else if(imageFormats.indexOf(mime) != -1){
         var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
       } else {
-        var image = "<img src=\"/images/placeholder.jpg\"/>";
+        var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><img src=\"/images/placeholder.jpg\"/></a>";
       }
 
       var subject = "<b>" + result[i].Subject + " " +"</b>";
