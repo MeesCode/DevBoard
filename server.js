@@ -36,7 +36,7 @@ connection.connect(function(err) {
 
 //return amount of replies and images to in thread
 app.get("/counter/:thread", function(req, res){
-  connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.Image) As Images, COUNT(post.Image) - temp2.ShownImages AS OmittedImages FROM post, ("
+  connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.Image) As Images, COUNT(post.Image) - ANY_VALUE(temp2.ShownImages) AS OmittedImages FROM post, ("
                  + "SELECT COUNT(temp.Images) As ShownImages FROM (SELECT Image AS Images FROM post WHERE Thread="+req.params.thread+" ORDER BY Id DESC LIMIT 5) AS temp"
                  +") AS temp2 WHERE Thread=" +req.params.thread , function(err, result){
     res.writeHead(200);
