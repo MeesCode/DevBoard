@@ -83,7 +83,7 @@ function getCounter(id){
       thread.innerHTML = "<div class=\"info\">" + (counter[0].Posts - 5) + " replies and "
                        + counter[0].OmittedImages + " images omitted. "
                        + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
-                        + thread.innerHTML;
+                       + thread.innerHTML;
     }
   });
 }
@@ -91,6 +91,7 @@ function getCounter(id){
 //get threads
 function getThreads(type, boardId, threadId){
   $.getJSON("/threads/" + boardId, function(result){
+    var array = [];
     for(var i = 0; i < result.length; i++){
       if(type == "thread" && threadId != result[i].Id){
         continue;
@@ -138,11 +139,14 @@ function getThreads(type, boardId, threadId){
 
       if(type == "board"){
         getPosts(result[i].Id, amount);
-        getCounter(result[i].Id);
+        array.push(result[i].Id);
       }
       if(type == "thread"){
         getPosts(result[i].Id, Number.MAX_SAFE_INTEGER);
       }
+    }
+    for(i = 0; i < array.length; i++){
+      getCounter(array[i]);
     }
   });
 }
