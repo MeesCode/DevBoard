@@ -1,0 +1,119 @@
+body{
+  font-family: arial;
+  font-size: 20pt;
+  color: #800;
+  background: #ffe url(/images/fade.png) top center repeat-x;
+}
+
+.box{
+  width: 750px;
+  background-color: #fff;
+  border: 1px solid #800;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 7px;
+  font-size: 12px;
+}
+
+.bar{
+  width: 100%;
+  background-color: #fca;
+  height: 26px;
+  color: #800;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 26px;
+}
+
+.bar h3{
+  margin: 0px;
+  padding-left: 6px;
+}
+
+.boxcontent{
+  margin-left: 6px;
+  margin-right: 6px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#info .bar{
+  color: white;
+  background-color: #800;
+}
+
+#info .box{
+  color: black;
+  border: 1px solid black;
+}
+
+#header{
+  vertical-align: bottom;
+}
+
+#title{
+  text-align: center;
+  color: #AF0A0F;
+  font-family: tahoma, sans-serif;
+  letter-spacing: -4px;
+}
+
+#title h1{
+  display: inline;
+  position: relative;
+  bottom: 30px;
+}
+
+#title img{
+  display: inline;
+  text-decoration: none;
+}
+
+a{
+  color: #800;
+  text-decoration: none;
+}
+
+a:hover{
+  text-decoration: underline;
+  color: #DD0000;
+}
+
+hr{
+  border: none;
+  border-top: 1px solid #800;
+  width: 750px;
+  height: 0px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+ul{
+  display: inline-block;
+  padding: 0px;
+}
+
+.box li{
+  margin-left: 18px;
+  margin-right: 0px;
+  height: 200px;
+}
+
+.box .thread img{
+  box-shadow: none;
+  border: 1px solid #800;
+  margin-top: 5px;
+}
+
+#statcontent{
+  text-align: center;
+}
+
+#footer {
+  clear: left;
+}
+
+#credits{
+  text-align: center;
+  font-size: 7pt;
+}

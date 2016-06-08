@@ -54,7 +54,7 @@ app.get("/header", function(req, res){
 
 //return board list
 app.get("/boardlist", function(req, res){
-  connection.query("SELECT Id FROM board", function(err, result){
+  connection.query("SELECT Id, Title FROM board", function(err, result){
     res.writeHead(200);
     res.end(JSON.stringify(result));
   });
@@ -73,6 +73,22 @@ app.get("/threads/:type", function(req, res){
 app.get("/posts/:type", function(req, res){
   connection.query("SELECT * FROM post WHERE Thread=\""
                   + req.params.type + "\"", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
+//return populair threads
+app.get("/populair", function(req, res){
+  connection.query("SELECT thread.*, board.Title FROM board, thread WHERE board.id=thread.Board ORDER BY UpdatedTime DESC LIMIT 12", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
+//return stats
+app.get("/stats", function(req, res){
+  connection.query("SELECT MAX(Id) AS Count FROM post", function(err, result){
     res.writeHead(200);
     res.end(JSON.stringify(result));
   });
@@ -129,6 +145,10 @@ app.get("/:type/catalog", function(req, res){
       title: "/" + type + "/ - " + result[0].Title
     });
   });
+});
+
+app.get("/", function(req, res){
+      res.render("home");
 });
 
 app.get("*", function(req, res){
