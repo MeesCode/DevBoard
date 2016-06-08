@@ -46,7 +46,7 @@ function getPopulairThreads(){
       var subject = "<b>" + result[i].Subject + " </b>";
       var board = "<b>" + result[i].Title + " </b>";
 
-      li.innerHTML = board + "<br/>" + image + "<span class=\"counter\"></span>" + subject + result[i].Comment;
+      li.innerHTML = board + "<br/>" + image + "<br/>" + subject + result[i].Comment;
       document.getElementById("threads").appendChild(li);
     }
   });

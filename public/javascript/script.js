@@ -62,7 +62,7 @@ function getBoardList(){
         list += " / ";
       }
     }
-    list += " ]";
+    list += " ] [<a href=\"/\">Home</a>]";
     document.getElementsByClassName("boardlist")[0].innerHTML = list;
     document.getElementsByClassName("boardlist")[1].innerHTML = list;
   });
