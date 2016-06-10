@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `Devboard`.`announcements` ;
 
 CREATE TABLE IF NOT EXISTS `DevBoard`.`announcements` (
   `Id` INT(11) NOT NULL AUTO_INCREMENT,
-  `CreationDate` DATE NOT NULL DEFAULT CURDATE(),
+  `CreationDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Comment` text NOT NULL,
   PRIMARY KEY (`Id`)
 );
