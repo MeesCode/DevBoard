@@ -86,6 +86,15 @@ app.get("/populair", function(req, res){
   });
 });
 
+//return announcements
+app.get("/announcements", function(req, res){
+  connection.query("SELECT Comment FROM announcements WHERE CreationDate > NOW() - INTERVAL 1 DAY", function(err, result){
+    res.writeHead(200);
+    res.end(JSON.stringify(result));
+  });
+});
+
+
 //return stats
 app.get("/stats", function(req, res){
   connection.query("SELECT MAX(Id) AS Count FROM post", function(err, result){

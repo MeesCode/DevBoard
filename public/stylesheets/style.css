@@ -16,6 +16,11 @@ body{
   letter-spacing: -2px;
 }
 
+#announcements{
+  color: red;
+  text-align: center;
+}
+
 #headerImage{
   width: 100%;
   text-align: center;

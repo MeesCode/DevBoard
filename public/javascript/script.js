@@ -50,6 +50,21 @@ function init(type, boardId, threadId){
   getBoardList();
   getHeaderImage();
   getThreads(type, boardId, threadId);
+  getAnnouncements();
+}
+
+//get announcements
+function getAnnouncements(){
+  $.getJSON("/announcements", function(result){
+    var div = document.getElementById("announcements");
+    if(result.length == 0){
+      return;
+    }
+    div.innerHTML = "<hr>";
+    for(var i = 0; i < result.length; i++){
+      div.innerHTML += result[i].Comment + "<br/>";
+    }
+  });
 }
 
 //get boardlists on the top and bottom of the page
