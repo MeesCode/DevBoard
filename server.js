@@ -13,7 +13,7 @@ app.set('views', __dirname + '/static/views');
 app.set('view engine', 'ejs');
 
 //create server
-http.createServer(app).listen(8080);
+http.createServer(app).listen(80);
 app.use(express.static('public'));
 
 //set database connection variables
@@ -33,6 +33,18 @@ connection.connect(function(err) {
     return;
   }
 });
+
+function regex(string, callback){
+  //escape html injections
+  string = string.replace(/</g, "&lt");
+  
+  //allow newlines
+  string = string.replace(/\\n/g, "<br>");
+  
+  //post linking
+  string = string.replace(/(?:>>)(\d+)/g, "<a href=\\\"#$1\\\">>>$1</a>");
+  callback(string);
+}
 
 //return amount of replies and images to in thread
 app.get("/counter/:thread", function(req, res){
@@ -64,8 +76,10 @@ app.get("/boardlist", function(req, res){
 app.get("/threads/:type", function(req, res){
   connection.query("SELECT * FROM thread WHERE Board=\""
                   + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
+      regex(JSON.stringify(result), function(response){
+      res.writeHead(200);
+      res.end(response);
+    });
   });
 });
 
@@ -73,16 +87,20 @@ app.get("/threads/:type", function(req, res){
 app.get("/posts/:type", function(req, res){
   connection.query("SELECT * FROM post WHERE Thread=\""
                   + req.params.type + "\"", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
+      regex(JSON.stringify(result), function(response){
+      res.writeHead(200);
+      res.end(response);
+    });
   });
 });
 
 //return populair threads
 app.get("/populair", function(req, res){
   connection.query("SELECT thread.*, board.Title FROM board, thread WHERE board.id=thread.Board ORDER BY UpdatedTime DESC LIMIT 12", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
+    regex(JSON.stringify(result), function(response){
+      res.writeHead(200);
+      res.end(response);
+    }); 
   });
 });
 
@@ -177,7 +195,8 @@ app.post("/upload", upload.single("image"), function(req, res){
   if(comment == "\"\"") comment = "NULL";
 
   if(req.body.type == "post"){
-    //POSTS
+ 
+   //POSTS
     console.log("post");
 
     //if there's an image upload

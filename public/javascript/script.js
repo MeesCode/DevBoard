@@ -95,6 +95,7 @@ function getCounter(id){
   $.getJSON("/counter/" + id, function(counter){
     if(counter[0].Posts > amount){
       var thread = document.getElementById(id).getElementsByTagName("ul")[0];
+      console.log(thread);
       thread.innerHTML = "<div class=\"info\">" + (counter[0].Posts - 5) + " replies and "
                        + counter[0].OmittedImages + " images omitted. "
                        + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
@@ -106,7 +107,6 @@ function getCounter(id){
 //get threads
 function getThreads(type, boardId, threadId){
   $.getJSON("/threads/" + boardId, function(result){
-    var array = [];
     for(var i = 0; i < result.length; i++){
       if(type == "thread" && threadId != result[i].Id){
         continue;
@@ -153,24 +153,23 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(li);
 
       if(type == "board"){
-        getPosts(result[i].Id, amount);
-        array.push(result[i].Id);
+        getPosts(result[i].Id, amount, function(id){
+          getCounter(id);
+        });
       }
       if(type == "thread"){
         getPosts(result[i].Id, Number.MAX_SAFE_INTEGER);
       }
     }
-    for(i = 0; i < array.length; i++){
-      getCounter(array[i]);
-    }
   });
 }
 
 //get posts
-function getPosts(thread, amount){
+function getPosts(thread, amount, callback){
+  console.log(thread);
   $.getJSON("/posts/" + thread, function(posts){
+    console.log("after getJSON");
     var postUl = document.createElement("ul");
-
     if(posts.length >= amount){
       var start = posts.length - amount;
     } else {
@@ -180,6 +179,7 @@ function getPosts(thread, amount){
       var postIl = document.createElement("li");
       postIl.className = "post";
       postIl.id = posts[i].Id;
+      console.log(posts[i].Id);
 
       if(posts[i].Image != null){
         var mime = posts[i].Image.split(".")[1];
@@ -212,5 +212,6 @@ function getPosts(thread, amount){
       postUl.appendChild(postIl);
     }
     document.getElementById(thread).appendChild(postUl);
+    callback(thread);
   });
 }
