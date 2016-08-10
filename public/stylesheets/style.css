@@ -8,6 +8,10 @@ body{
   text-decoration: none;
 }
 
+.greentext{
+  color: #789922;
+}
+
 #title{
   color: #AF0A0F;
   text-align: center;

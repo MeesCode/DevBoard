@@ -37,12 +37,19 @@ connection.connect(function(err) {
 function regex(string, callback){
   //escape html injections
   string = string.replace(/</g, "&lt");
-  
+
   //allow newlines
   string = string.replace(/\\n/g, "<br>");
-  
+
+  //greentexting
+  string = string.replace(/\[green](.*?)\[\/green]/g, "<span class=\\\"greentext\\\">>$1</span>");
+
   //post linking
-  string = string.replace(/(?:>>)(\d+)/g, "<a href=\\\"#$1\\\">>>$1</a>");
+  string = string.replace(/\[postlink](.*?)\[\/postlink]/g, "<a href=\\\"#$1\\\">>>$1</a>");
+
+  //code tag
+  //string = string.replace(/\[code](.*?)\[\/code]/g, "<textarea rows=\\\"4\\\" cols=\\\"50\\\">$1</textarea>");
+
   callback(string);
 }
 
@@ -100,7 +107,7 @@ app.get("/populair", function(req, res){
     regex(JSON.stringify(result), function(response){
       res.writeHead(200);
       res.end(response);
-    }); 
+    });
   });
 });
 
@@ -186,6 +193,11 @@ app.get("*", function(req, res){
 app.post("/upload", upload.single("image"), function(req, res){
   console.log("upload request");
 
+  //post linking
+  req.body.comment = req.body.comment.replace(/>>(\d+)/g, "[postlink]$1[/postlink]");
+  //greentext
+  req.body.comment = req.body.comment.replace(/>(.*)/g, "[green]$1[/green]");
+
   //make it so that the database stays clean
   var name = "\"" + req.body.name + "\"";
   var subject = "\"" + req.body.subject + "\"";
@@ -195,7 +207,7 @@ app.post("/upload", upload.single("image"), function(req, res){
   if(comment == "\"\"") comment = "NULL";
 
   if(req.body.type == "post"){
- 
+
    //POSTS
     console.log("post");
 

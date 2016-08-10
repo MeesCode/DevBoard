@@ -23,7 +23,6 @@ function resize(id, index){
 $(function() {
     $('#boardForm').submit(function() {
         var input = document.getElementById("selectImage").value;
-        console.log(input);
         if(input == ""){
           document.getElementById("boardForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected</p>";
           return false;
@@ -95,7 +94,6 @@ function getCounter(id){
   $.getJSON("/counter/" + id, function(counter){
     if(counter[0].Posts > amount){
       var thread = document.getElementById(id).getElementsByTagName("ul")[0];
-      console.log(thread);
       thread.innerHTML = "<div class=\"info\">" + (counter[0].Posts - 5) + " replies and "
                        + counter[0].OmittedImages + " images omitted. "
                        + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
@@ -166,9 +164,7 @@ function getThreads(type, boardId, threadId){
 
 //get posts
 function getPosts(thread, amount, callback){
-  console.log(thread);
   $.getJSON("/posts/" + thread, function(posts){
-    console.log("after getJSON");
     var postUl = document.createElement("ul");
     if(posts.length >= amount){
       var start = posts.length - amount;
@@ -179,7 +175,6 @@ function getPosts(thread, amount, callback){
       var postIl = document.createElement("li");
       postIl.className = "post";
       postIl.id = posts[i].Id;
-      console.log(posts[i].Id);
 
       if(posts[i].Image != null){
         var mime = posts[i].Image.split(".")[1];
