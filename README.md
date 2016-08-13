@@ -8,6 +8,8 @@ does however try to incorporate as much features as possible that affect
 the end user directly. Which is something most other projects have, in my eyes,
 failed to achieve.
 
+[Working demo](http://mees.space)
+
 <h4>features:</h4>
 - jpeg, bmp, png, webp, svg, gif, mp4, ogg and WebM (w/ sound) support
 - catalog
