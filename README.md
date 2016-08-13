@@ -32,6 +32,7 @@ failed to achieve.
 - make a folder called "tmp" in the root directory
 - change the database login credentials in the server.js file
 - make sure the right port is used, also in the server.js file
+
  ```
 # npm install
 # npm start
