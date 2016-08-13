@@ -1,8 +1,8 @@
 <h1>DevBoard</h1>
 <h3>Lightweight imageboard software</h3>
 
-An ongoing development imageboard inspired by the populair website 4chan.
-This is not intended as a direct competitor to other imageboard softwares,
+An ongoing development imageboard inspired by the popular website 4chan.
+This is not intended as a direct competitor to other imageboard solutions,
 as a lot of moderation features have yet to be implemented. This project
 does however tries to incorporate as much features as possible that affect
 the end user directly. Which is something most other projects have, in my eyes,
