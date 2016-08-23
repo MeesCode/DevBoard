@@ -13,7 +13,7 @@ app.set('views', __dirname + '/static/views');
 app.set('view engine', 'ejs');
 
 //create server
-http.createServer(app).listen(80);
+http.createServer(app).listen(8080);
 app.use(express.static('public'));
 
 //set database connection variables
