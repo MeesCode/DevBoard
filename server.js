@@ -34,7 +34,17 @@ connection.connect(function(err) {
   }
 });
 
-function regex(string, callback){
+function regex(object, callback){
+
+  for(var post in object){
+    if(object[post].Comment != null){
+      object[post].Comment = object[post].Comment.replace(/</g, "&lt");
+      object[post].Comment = object[post].Comment.replace(/>>(\d+)/g, "<a href=\"#$1\">&gt&gt$1</a>");
+      object[post].Comment = object[post].Comment.replace(/(\n|\r|^)>(.*)/g, "<span class=\"greentext\">$1&gt$2</span>");
+      object[post].Comment = JSON.parse(JSON.stringify(object[post].Comment).replace(/\\n/g, "<br/>"));
+    }
+  }
+  /*
   //escape html injections
   string = string.replace(/</g, "&lt");
 
@@ -49,8 +59,9 @@ function regex(string, callback){
 
   //code tag
   //string = string.replace(/\[code](.*?)\[\/code]/g, "<textarea rows=\\\"4\\\" cols=\\\"50\\\">$1</textarea>");
+  */
 
-  callback(string);
+  callback(object);
 }
 
 //return amount of replies and images to in thread
@@ -83,9 +94,9 @@ app.get("/boardlist", function(req, res){
 app.get("/threads/:type", function(req, res){
   connection.query("SELECT * FROM thread WHERE Board=\""
                   + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
-      regex(JSON.stringify(result), function(response){
+      regex(result, function(response){
       res.writeHead(200);
-      res.end(response);
+      res.end(JSON.stringify(result));
     });
   });
 });
@@ -94,9 +105,9 @@ app.get("/threads/:type", function(req, res){
 app.get("/posts/:type", function(req, res){
   connection.query("SELECT * FROM post WHERE Thread=\""
                   + req.params.type + "\"", function(err, result){
-      regex(JSON.stringify(result), function(response){
+      regex(result, function(response){
       res.writeHead(200);
-      res.end(response);
+      res.end(JSON.stringify(response));
     });
   });
 });
@@ -104,9 +115,9 @@ app.get("/posts/:type", function(req, res){
 //return populair threads
 app.get("/populair", function(req, res){
   connection.query("SELECT thread.*, board.Title FROM board, thread WHERE board.id=thread.Board ORDER BY UpdatedTime DESC LIMIT 12", function(err, result){
-    regex(JSON.stringify(result), function(response){
+    regex(result, function(response){
       res.writeHead(200);
-      res.end(response);
+      res.end(JSON.stringify(response));
     });
   });
 });
@@ -192,11 +203,6 @@ app.get("*", function(req, res){
 //posting
 app.post("/upload", upload.single("image"), function(req, res){
   console.log("upload request");
-
-  //post linking
-  req.body.comment = req.body.comment.replace(/>>(\d+)/g, "[postlink]$1[/postlink]");
-  //greentext
-  req.body.comment = req.body.comment.replace(/>(.*)/g, "[green]$1[/green]");
 
   //make it so that the database stays clean
   var name = "\"" + req.body.name + "\"";
