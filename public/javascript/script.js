@@ -44,6 +44,13 @@ $(function() {
     });
 });
 
+//link a post
+function postlink(id){
+  var text = document.getElementById("threadComment");
+  text.value = text.value + ">>" + id + "\n";
+  text.focus();
+}
+
 //initialize page
 function init(type, boardId, threadId){
   getBoardList();
@@ -61,7 +68,7 @@ function getAnnouncements(){
     }
     div.innerHTML = "<hr>";
     for(var i = 0; i < result.length; i++){
-      div.innerHTML += result[i].Comment + "<br/>";
+      div.innerHTML += "<b>" + result[i].Comment + "</b><br/>";
     }
   });
 }
@@ -134,9 +141,15 @@ function getThreads(type, boardId, threadId){
       var subject = "<p class=\"threadSubject\">" + result[i].Subject + " " +"</p>";
       var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
       var date = result[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-      var id = "No.<a href=\"/"+boardId+"/thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
       var reply = "[<a id=\"threadReply\" href=\""+boardId+"/thread/" + result[i].Id + "\">Reply</a>]";
       var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
+
+      if(type == "thread"){
+        var id = "No.<a onclick=\"postlink(" + result[i].Id + ")\"" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+      } else {
+        var id = "No.<a href=\"/"+boardId+"/thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+      }
+
 
       if(type == "board"){
         li.innerHTML = filelink + "<br/>" + image + subject + name + date
@@ -151,19 +164,19 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(li);
 
       if(type == "board"){
-        getPosts(result[i].Id, amount, function(id){
+        getPosts(type, boardId, result[i].Id, amount, function(id){
           getCounter(id);
         });
       }
       if(type == "thread"){
-        getPosts(result[i].Id, Number.MAX_SAFE_INTEGER);
+        getPosts(type, boardId, result[i].Id, Number.MAX_SAFE_INTEGER);
       }
     }
   });
 }
 
 //get posts
-function getPosts(thread, amount, callback){
+function getPosts(type, boardId, thread, amount, callback){
   $.getJSON("/posts/" + thread, function(posts){
     var postUl = document.createElement("ul");
     if(posts.length >= amount){
@@ -196,8 +209,13 @@ function getPosts(thread, amount, callback){
       var filelink = "File: <u><a href=\"/uploads/" + posts[i].Image + "\"/>" +posts[i].Image + "</a></u>";
       var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
       var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
-      var id = "No.<a href=\"#" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
       var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
+      
+      if(type == "thread"){
+        var id = "No.<a onclick=\"postlink(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+      } else {
+        var id = "No.<a href=\"" + boardId + "/thread/" + posts[i].Thread + "\">" + posts[i].Id + "</a>   ";
+      }
 
       if(posts[i].Image != null){
         postIl.innerHTML = name + date + id + "<br/>" + filelink + "<br/>" + image + comment;

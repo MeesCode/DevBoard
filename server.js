@@ -44,23 +44,6 @@ function regex(object, callback){
       object[post].Comment = JSON.parse(JSON.stringify(object[post].Comment).replace(/\\n/g, "<br/>"));
     }
   }
-  /*
-  //escape html injections
-  string = string.replace(/</g, "&lt");
-
-  //allow newlines
-  string = string.replace(/\\n/g, "<br>");
-
-  //greentexting
-  string = string.replace(/\[green](.*?)\[\/green]/g, "<span class=\\\"greentext\\\">>$1</span>");
-
-  //post linking
-  string = string.replace(/\[postlink](.*?)\[\/postlink]/g, "<a href=\\\"#$1\\\">>>$1</a>");
-
-  //code tag
-  //string = string.replace(/\[code](.*?)\[\/code]/g, "<textarea rows=\\\"4\\\" cols=\\\"50\\\">$1</textarea>");
-  */
-
   callback(object);
 }
 
