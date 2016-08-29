@@ -19,6 +19,7 @@ failed to achieve.
 - post linking
 - inline image expansion
 - post counter
+- quick reply
 
 <h4>planned features:</h4>
 - board linking
