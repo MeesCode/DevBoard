@@ -1,0 +1,56 @@
+
+.ui-dialog {
+  padding: 1px;
+  padding-bottom: 0px;
+  background-color: #D6DAF0;
+  border: 1px solid rgb(183, 197, 217);
+  text-align: left;
+  outline: none;
+  position: absolute;
+}
+
+.ui-dialog-titlebar {
+  width: 298px;
+  height: 18px;
+  background-color: #98E;
+  font-size: 10pt;
+  text-align: center;
+  border: 1px solid black;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 1px;
+  cursor: move;
+}
+
+.ui-button {
+  float: right;
+  background: url(../images/cross.png) no-repeat;
+  border: none;
+  color: transparent;
+  width: 18px;
+  height: 18px;
+  outline: none;
+  cursor: pointer;
+}
+
+#quickreply input {
+  width: 100%;
+  margin-bottom: 1px;
+}
+
+#quickreply textarea {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 1px;
+}
+
+#quickreply input[type=submit]{
+  width: 59px;
+  float: right;
+}
+
+#quickreply input[type=file]{
+  width: auto;
+  float: left;
+  margin: 0px;
+}

@@ -1,5 +1,5 @@
 body{
-  font-family: arial;
+  font-family: arial,helvetica,sans-serif;
   font-size: 10pt;
   background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
 }

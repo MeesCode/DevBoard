@@ -3,11 +3,13 @@
   <head>
     <title><%= title %></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <script src="/javascript/script.js"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/post.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/thread.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/form.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/quickreply.css">
   </head>
   <body onload="init('board','<%= board %>', null)">
 
@@ -59,6 +61,24 @@
       </ul>
     </div>
     <hr>
+
+    <script>
+      $( function() {
+        $( "#quickreply" ).dialog({
+          autoOpen: false
+        });
+      } );
+    </script>
+
+    <div id="quickreply" title="Reply to thread No.Placeholder">
+      <form id="quickreplyForm" method="post" enctype="multipart/form-data" action="/upload">
+        <input type="hidden" name="type" value="post">
+        <input id="threadId" type="hidden" name="belong" value="placeholder">
+        <input type="text" name="name" placeholder="Anonymous">
+        <textarea id="quickreplyComment" name="comment" form="quickreplyForm"></textarea>
+        <input id="selectImage" type="file" name="image">
+        <input type="submit" value="Post">
+    </div>
 
     <div id="footer">
       <div class="boardlist"></div>

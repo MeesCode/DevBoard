@@ -44,11 +44,35 @@ $(function() {
     });
 });
 
+//make sure every post has either an image or a comment
+$(function() {
+    $("#quickreplyForm").submit(function() {
+        var input1 = document.getElementById("selectImage").value;
+        var input2 = document.getElementById("quickreplyComment").value;
+        if(input1 == "" && input2 == ""){
+          document.getElementById("quickreplyForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          return false;
+        }
+        return true;
+    });
+});
+
 //link a post
-function postlink(id){
-  var text = document.getElementById("threadComment");
-  text.value = text.value + ">>" + id + "\n";
+function postlinkThread(postId){
+  $( "#quickreply" ).dialog( "open" );
+  var text = document.getElementById("quickreplyComment");
+  text.value = text.value + ">>" + postId + "\n";
   text.focus();
+}
+
+function postlinkBoard(threadId, postId){
+  $( "#quickreply" ).dialog({title: "Reply to thread No." + threadId});
+  if(document.getElementById("threadId").value != threadId){
+    var text = document.getElementById("quickreplyComment");
+    text.value = "";
+  }
+  document.getElementById("threadId").value = threadId;
+  postlinkThread(postId);
 }
 
 //initialize page
@@ -145,9 +169,9 @@ function getThreads(type, boardId, threadId){
       var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
 
       if(type == "thread"){
-        var id = "No.<a onclick=\"postlink(" + result[i].Id + ")\"" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+        var id = "No.<a onclick=\"postlinkThread(" + result[i].Id + ")\">" + result[i].Id + "</a>   ";
       } else {
-        var id = "No.<a href=\"/"+boardId+"/thread/" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+        var id = "No.<a onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
       }
 
 
@@ -210,11 +234,12 @@ function getPosts(type, boardId, thread, amount, callback){
       var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
       var date = posts[i].CreationDate.replace("T", " ").replace(".000Z", "")+" ";
       var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
-      
+
       if(type == "thread"){
-        var id = "No.<a onclick=\"postlink(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+        var id = "No.<a onclick=\"postlinkThread(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
       } else {
-        var id = "No.<a href=\"" + boardId + "/thread/" + posts[i].Thread + "\">" + posts[i].Id + "</a>   ";
+        var id = "No.<a onclick=\"postlinkBoard(" + posts[i].Thread + ", " + posts[i].Id + ")\">" + posts[i].Id + "</a>   ";
+        //var id = "No.<a href=\"" + boardId + "/thread/" + posts[i].Thread + "\">" + posts[i].Id + "</a>   ";
       }
 
       if(posts[i].Image != null){
