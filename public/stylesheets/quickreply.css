@@ -6,7 +6,7 @@
   border: 1px solid rgb(183, 197, 217);
   text-align: left;
   outline: none;
-  position: absolute;
+  position: fixed;
 }
 
 .ui-dialog-titlebar {

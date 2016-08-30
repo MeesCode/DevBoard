@@ -59,7 +59,11 @@ $(function() {
 
 //link a post
 function postlinkThread(postId){
-  $( "#quickreply" ).dialog( "open" );
+  if(!$( "#quickreply" ).dialog( "isOpen" )){
+    $( "#quickreply" ).dialog( "open" );
+    document.getElementsByClassName("ui-dialog")[0].style.top = "50px";
+    document.getElementsByClassName("ui-dialog")[0].style.right = "50px";
+  }
   var text = document.getElementById("quickreplyComment");
   text.value = text.value + ">>" + postId + "\n";
   text.focus();
