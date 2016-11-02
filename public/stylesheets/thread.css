@@ -20,11 +20,10 @@
 }
 
 .thread {
-  display: table;
   border-top: none;
   border-left: none;
   width: 100%;
-}
+} 
 
 #posts{
   padding: 0px;
@@ -55,7 +54,8 @@
 }
 
 .threadComment{
-  display: inline;
+  display: block;
+  margin-left: 20px;
 }
 
 .info{

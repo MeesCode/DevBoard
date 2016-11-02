@@ -125,7 +125,7 @@ function getHeaderImage(){
 }
 
 //get reply and image count per thread
-function getCounter(id){
+function getCounter(id, callback){
   $.getJSON("/counter/" + id, function(counter){
     if(counter[0].Posts > amount){
       var thread = document.getElementById(id).getElementsByTagName("ul")[0];
@@ -135,7 +135,25 @@ function getCounter(id){
                        + thread.innerHTML;
     }
   });
+  callback(id);
 }
+
+function getLinesThread(id){
+  var comment = document.getElementById(id).getElementsByClassName("threadComment")[0];
+  var commentLines = comment.innerHTML.split("<br>");
+  if(commentLines.length >= 15){
+    var lines = "";
+    for(var i = 0; i < 15; i++){
+      lines += commentLines[i] + "<br>";
+    }
+    var info = "<div class=\"info\"> Comment too long. <a id=\"threadReply\" href=\""
+             + document.URL+"/thread/"+id+"\">Click here</a> to view the full text.</div>";
+    var thread = document.getElementById(id).getElementsByTagName("ul")[0];
+    comment.innerHTML = lines;
+    thread.innerHTML = info + thread.innerHTML;
+  }
+}
+    
 
 //get threads
 function getThreads(type, boardId, threadId){
@@ -154,6 +172,8 @@ function getThreads(type, boardId, threadId){
       if(result[i].Comment == null) result[i].Comment = "";
 
       var mime = result[i].Image.split(".")[1];
+      var info = ""; 
+
 
       if(videoFormats.indexOf(mime) != -1) {
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"" + result[i].Image +"\"><video controls preload=\"metadata\">"
@@ -192,8 +212,10 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(li);
 
       if(type == "board"){
-        getPosts(type, boardId, result[i].Id, amount, function(id){
-          getCounter(id);
+        getPosts(type, boardId, result[i].Id, amount, info, function(id){
+          getCounter(id, function(id){
+            getLinesThread(id);
+          });
         });
       }
       if(type == "thread"){
@@ -204,7 +226,7 @@ function getThreads(type, boardId, threadId){
 }
 
 //get posts
-function getPosts(type, boardId, thread, amount, callback){
+function getPosts(type, boardId, thread, amount, info, callback){
   $.getJSON("/posts/" + thread, function(posts){
     var postUl = document.createElement("ul");
     if(posts.length >= amount){
@@ -212,6 +234,7 @@ function getPosts(type, boardId, thread, amount, callback){
     } else {
       var start = 0;
     }
+
     for(var i = start; i < posts.length && i < start + amount; i++){
       var postIl = document.createElement("li");
       postIl.className = "post";
@@ -247,9 +270,9 @@ function getPosts(type, boardId, thread, amount, callback){
       }
 
       if(posts[i].Image != null){
-        postIl.innerHTML = name + date + id + "<br/>" + filelink + "<br/>" + image + comment;
+        postIl.innerHTML += name + date + id + "<br/>" + filelink + "<br/>" + image + comment;
       } else {
-        postIl.innerHTML = name + date + id + "<br/>" + "<br/>" + comment;
+        postIl.innerHTML += name + date + id + "<br/>" + "<br/>" + comment;
       }
       postUl.appendChild(postIl);
     }
