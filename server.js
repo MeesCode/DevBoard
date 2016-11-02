@@ -13,7 +13,7 @@ app.set('views', __dirname + '/static/views');
 app.set('view engine', 'ejs');
 
 //create server
-http.createServer(app).listen(8080);
+http.createServer(app).listen(80);
 app.use(express.static('public'));
 
 //set database connection variables
@@ -73,13 +73,37 @@ app.get("/boardlist", function(req, res){
   });
 });
 
+//return post comment
+app.get("/postcomment/:type", function(req, res){
+  connection.query("SELECT IsThread FROM post WHERE Id=\""
+                  + req.params.type + "\"", function(err, result){
+      if(result[0].IsThread == 1){
+        connection.query("SELECT Comment FROM thread WHERE Id=\""
+                        + req.params.type + "\"", function(err, result){
+          regex(result, function(response){
+            res.writeHead(200);
+            res.end(JSON.stringify(response));
+          });
+        });
+      } else {
+        connection.query("SELECT Comment FROM post WHERE Id=\""
+                        + req.params.type + "\"", function(err, result){
+          regex(result, function(response){
+            res.writeHead(200);
+            res.end(JSON.stringify(response));
+          });
+        });
+      }
+  });
+});
+
 //return threads
 app.get("/threads/:type", function(req, res){
   connection.query("SELECT * FROM thread WHERE Board=\""
                   + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
       regex(result, function(response){
-      res.writeHead(200);
-      res.end(JSON.stringify(result));
+        res.writeHead(200);
+        res.end(JSON.stringify(result));
     });
   });
 });
@@ -89,8 +113,8 @@ app.get("/posts/:type", function(req, res){
   connection.query("SELECT * FROM post WHERE Thread=\""
                   + req.params.type + "\"", function(err, result){
       regex(result, function(response){
-      res.writeHead(200);
-      res.end(JSON.stringify(response));
+        res.writeHead(200);
+        res.end(JSON.stringify(response));
     });
   });
 });

@@ -44,8 +44,13 @@ body{
   color: #34345C;
 }
 
-ul{
+.thread ul{
   padding: 20px;
+  margin-top: 0px;
+}
+
+.post ul{
+  padding: 0px;
   margin-top: 0px;
 }
 

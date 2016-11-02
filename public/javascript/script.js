@@ -24,7 +24,13 @@ $(function() {
     $('#boardForm').submit(function() {
         var input = document.getElementById("selectImage").value;
         if(input == ""){
-          document.getElementById("boardForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected</p>";
+          document.getElementById("boardForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: no file selected</p>";
+          return false;
+        }
+        if(input.length > 2000){
+          document.getElementById("threadForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: Comment too long (" + input2.length + "/2000)</p>";
           return false;
         }
         return true;
@@ -37,7 +43,13 @@ $(function() {
         var input1 = document.getElementById("selectImage").value;
         var input2 = document.getElementById("threadComment").value;
         if(input1 == "" && input2 == ""){
-          document.getElementById("threadForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          document.getElementById("threadForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          return false;
+        }
+        if(input2.length > 2000){
+          document.getElementById("threadForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: Comment too long (" + input2.length + "/2000)</p>";
           return false;
         }
         return true;
@@ -50,7 +62,13 @@ $(function() {
         var input1 = document.getElementById("selectImage").value;
         var input2 = document.getElementById("quickreplyComment").value;
         if(input1 == "" && input2 == ""){
-          document.getElementById("quickreplyForm").innerHTML += "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          document.getElementById("quickreplyForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: no file selected or comment given</p>";
+          return false;
+        }
+        if(input2.length > 2000){
+          document.getElementById("quickreplyForm").innerHTML +=
+            "<p style=\"color:red;align: center;\">ERROR: Comment too long (" + input2.length + "/2000)</p>";
           return false;
         }
         return true;
@@ -129,16 +147,15 @@ function getCounter(id, callback){
   $.getJSON("/counter/" + id, function(counter){
     if(counter[0].Posts > amount){
       var thread = document.getElementById(id).getElementsByTagName("ul")[0];
-      thread.innerHTML = "<div class=\"info\">" + (counter[0].Posts - 5) + " replies and "
+      thread.innerHTML = "<div class=\"info omitted\">" + (counter[0].Posts - 5) + " replies and "
                        + counter[0].OmittedImages + " images omitted. "
                        + "<a href=\""+document.URL+"/thread/"+id+"\">Click here</a> to view.</div>"
                        + thread.innerHTML;
     }
   });
-  callback(id);
 }
 
-function getLinesThread(id){
+function getLines(id){
   var comment = document.getElementById(id).getElementsByClassName("threadComment")[0];
   var commentLines = comment.innerHTML.split("<br>");
   if(commentLines.length >= 15){
@@ -146,14 +163,23 @@ function getLinesThread(id){
     for(var i = 0; i < 15; i++){
       lines += commentLines[i] + "<br>";
     }
-    var info = "<div class=\"info\"> Comment too long. <a id=\"threadReply\" href=\""
-             + document.URL+"/thread/"+id+"\">Click here</a> to view the full text.</div>";
+    var info = "<div class=\"info longcomment\"> Comment too long. <a id=\"threadReply\" "
+             + "onclick=\"getPostComment("+id+")\">Click here</a> to view the full text.</div>";
     var thread = document.getElementById(id).getElementsByTagName("ul")[0];
     comment.innerHTML = lines;
     thread.innerHTML = info + thread.innerHTML;
   }
 }
-    
+
+function getPostComment(id){
+  var comment = document.getElementById(id).getElementsByClassName("threadComment")[0];
+  $.getJSON("/postcomment/" + id, function(result){
+    comment.innerHTML = result[0].Comment;
+  });
+  var list = document.getElementById(id).getElementsByTagName("ul")[0];
+  var info = document.getElementById(id).getElementsByClassName("longcomment")[0];
+  list.removeChild(info);
+}
 
 //get threads
 function getThreads(type, boardId, threadId){
@@ -172,15 +198,15 @@ function getThreads(type, boardId, threadId){
       if(result[i].Comment == null) result[i].Comment = "";
 
       var mime = result[i].Image.split(".")[1];
-      var info = ""; 
-
 
       if(videoFormats.indexOf(mime) != -1) {
-        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"" + result[i].Image +"\"><video controls preload=\"metadata\">"
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\""
+                  + result[i].Image +"\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
                   + "</video></a>";
       } else if(imageFormats.indexOf(mime) != -1){
-        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\">"
+          + "<img src=\"/uploads/" + result[i].Image + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
       }
@@ -198,7 +224,6 @@ function getThreads(type, boardId, threadId){
         var id = "No.<a onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
       }
 
-
       if(type == "board"){
         li.innerHTML = filelink + "<br/>" + image + subject + name + date
                      + id + reply + "<br/>" + "<br/>" + comment;
@@ -211,31 +236,34 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(hr);
       document.getElementById("threads").appendChild(li);
 
-      if(type == "board"){
-        getPosts(type, boardId, result[i].Id, amount, info, function(id){
-          getCounter(id, function(id){
-            getLinesThread(id);
-          });
-        });
-      }
-      if(type == "thread"){
-        getPosts(type, boardId, result[i].Id, Number.MAX_SAFE_INTEGER);
-      }
+      getPosts(type, boardId, result[i].Id, function(id){
+        getLines(id);
+        var posts = document.getElementById(id).getElementsByClassName("post");
+        for(var j = 0; j < posts.length; j++){
+          getLines(posts[j].id);
+        }
+      });
     }
   });
 }
 
 //get posts
-function getPosts(type, boardId, thread, amount, info, callback){
+function getPosts(type, boardId, thread, callback){
   $.getJSON("/posts/" + thread, function(posts){
     var postUl = document.createElement("ul");
-    if(posts.length >= amount){
-      var start = posts.length - amount;
+
+    var postAmount = amount;
+    if(type == "thread"){
+      postAmount = Number.MAX_SAFE_INTEGER;
+    }
+
+    if(posts.length >= postAmount){
+      var start = posts.length - postAmount;
     } else {
       var start = 0;
     }
 
-    for(var i = start; i < posts.length && i < start + amount; i++){
+    for(var i = start; i < posts.length && i < start + postAmount; i++){
       var postIl = document.createElement("li");
       postIl.className = "post";
       postIl.id = posts[i].Id;
@@ -266,13 +294,12 @@ function getPosts(type, boardId, thread, amount, info, callback){
         var id = "No.<a onclick=\"postlinkThread(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
       } else {
         var id = "No.<a onclick=\"postlinkBoard(" + posts[i].Thread + ", " + posts[i].Id + ")\">" + posts[i].Id + "</a>   ";
-        //var id = "No.<a href=\"" + boardId + "/thread/" + posts[i].Thread + "\">" + posts[i].Id + "</a>   ";
       }
 
       if(posts[i].Image != null){
-        postIl.innerHTML += name + date + id + "<br/>" + filelink + "<br/>" + image + comment;
+        postIl.innerHTML += name + date + id + "<br/>" + filelink + "<br/>" + image + comment + "<ul></ul>";
       } else {
-        postIl.innerHTML += name + date + id + "<br/>" + "<br/>" + comment;
+        postIl.innerHTML += name + date + id + "<br/>" + "<br/>" + comment + "<ul></ul>";
       }
       postUl.appendChild(postIl);
     }
