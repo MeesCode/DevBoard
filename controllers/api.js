@@ -1,16 +1,16 @@
 var mysql = require("mysql");
 var fs = require("fs");
-var setup = require("./setup");
+var settings = require("./../settings");
 
 //set database connection variables
 var connection = mysql.createConnection({
-  host     : setup.getHost,
-  user     : setup.getUser,
-  password : setup.getPassword,
-  database : setup.getDatabase
+  host     : settings.getHost,
+  user     : settings.getUser,
+  password : settings.getPassword,
+  database : settings.getDatabase
 });
 
-
+//clip thread and post comments to max 15 lines
 function clip(response, callback){
   for(var j = 0; j < response.length; j++){
     if(response[j].Comment != null){
@@ -27,8 +27,8 @@ function clip(response, callback){
   callback(response);
 }
 
+//change text so that it can be properly displayed on the web
 function regex(object, callback){
-
   for(var post in object){
     if(object[post].Comment != null){
       object[post].Comment = object[post].Comment.replace(/</g, "&lt");

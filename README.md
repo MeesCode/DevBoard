@@ -33,8 +33,8 @@ failed to achieve.
 - make sure you have MySQL and node.js installed
 - make a folder called "uploads" in the public directory
 - make a folder called "tmp" in the root directory
-- change the database login credentials in the setup.js file
-- make sure the right port is used, also in the setup.js file
+- change the database login credentials in the settings.js file
+- make sure the right port is used, also in the settings.js file
 
  ```
 # npm install

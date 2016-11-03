@@ -1,12 +1,12 @@
 var mysql = require("mysql");
-var setup = require("./setup");
+var settings = require("./../settings");
 
 //set database connection variables
 var connection = mysql.createConnection({
-  host     : setup.getHost,
-  user     : setup.getUser,
-  password : setup.getPassword,
-  database : setup.getDatabase
+  host     : settings.getHost,
+  user     : settings.getUser,
+  password : settings.getPassword,
+  database : settings.getDatabase
 });
 
 module.exports = {
