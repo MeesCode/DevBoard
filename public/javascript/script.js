@@ -237,6 +237,7 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(li);
 
       getPosts(type, boardId, result[i].Id, function(id){
+        getCounter(id);
         getLines(id);
         var posts = document.getElementById(id).getElementsByClassName("post");
         for(var j = 0; j < posts.length; j++){
