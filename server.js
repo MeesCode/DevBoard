@@ -4,8 +4,11 @@ var multer = require("multer");
 var express = require("express");
 var mysql = require("mysql");
 var ejs = require("ejs");
+var api_routes = require("./api_routes");
+var routes = require("./routes");
+var setup = require("./setup");
 
-var upload = multer({ dest: 'tmp/' })
+var upload = multer({ dest: 'tmp/' });
 var app = express();
 
 //set views
@@ -13,15 +16,17 @@ app.set('views', __dirname + '/static/views');
 app.set('view engine', 'ejs');
 
 //create server
-http.createServer(app).listen(80);
+http.createServer(app).listen(setup.getPort);
 app.use(express.static('public'));
+app.use('/api', api_routes);
+app.use('/', routes);
 
 //set database connection variables
 var connection = mysql.createConnection({
-  host     : "localhost",
-  user     : "root",
-  password : "toor",
-  database : "DevBoard"
+  host     : setup.getHost,
+  user     : setup.getUser,
+  password : setup.getPassword,
+  database : setup.getDatabase
 });
 
 //connect to database
@@ -32,201 +37,6 @@ connection.connect(function(err) {
     console.log("Could not connect to database");
     return;
   }
-});
-
-function regex(object, callback){
-
-  for(var post in object){
-    if(object[post].Comment != null){
-      object[post].Comment = object[post].Comment.replace(/</g, "&lt");
-      object[post].Comment = object[post].Comment.replace(/>>(\d+)/g, "<a href=\"#$1\">&gt&gt$1</a>");
-      object[post].Comment = object[post].Comment.replace(/(\n|\r|^)>(.*)/g, "<span class=\"greentext\">$1&gt$2</span>");
-      object[post].Comment = JSON.parse(JSON.stringify(object[post].Comment).replace(/\\n/g, "<br>"));
-    }
-  }
-  callback(object);
-}
-
-//return amount of replies and images to in thread
-app.get("/counter/:thread", function(req, res){
-  connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.Image) As Images, COUNT(post.Image) - ANY_VALUE(temp2.ShownImages) AS OmittedImages FROM post, ("
-                 + "SELECT COUNT(temp.Images) As ShownImages FROM (SELECT Image AS Images FROM post WHERE Thread="+req.params.thread+" ORDER BY Id DESC LIMIT 5) AS temp"
-                 +") AS temp2 WHERE Thread=" +req.params.thread , function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
-  });
-});
-
-//return one of the availible header images
-app.get("/header", function(req, res){
-  fs.readdir("public/images/headers/", function(err, result){
-    res.writeHead(200);
-    res.end(result[Math.round(Math.random() * (result.length-1))]);
-  });
-});
-
-//return board list
-app.get("/boardlist", function(req, res){
-  connection.query("SELECT Id, Title FROM board", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
-  });
-});
-
-//return post comment
-app.get("/postcomment/:type", function(req, res){
-  connection.query("SELECT IsThread FROM post WHERE Id=\""
-                  + req.params.type + "\"", function(err, result){
-      if(result[0].IsThread == 1){
-        connection.query("SELECT Comment FROM thread WHERE Id=\""
-                        + req.params.type + "\"", function(err, result){
-          regex(result, function(response){
-            res.writeHead(200);
-            res.end(JSON.stringify(response));
-          });
-        });
-      } else {
-        connection.query("SELECT Comment FROM post WHERE Id=\""
-                        + req.params.type + "\"", function(err, result){
-          regex(result, function(response){
-            res.writeHead(200);
-            res.end(JSON.stringify(response));
-          });
-        });
-      }
-  });
-});
-
-function clip(response, callback){
-  for(var j = 0; j < response.length; j++){
-    if(response[j].Comment != null){
-      var commentLines = response[j].Comment.split("<br>");
-      if(commentLines.length >= 15){
-        var lines = "";
-        for(var i = 0; i < 15; i++){
-          lines += commentLines[i] + "<br>";
-        }
-        response[j].Comment = lines;
-      }
-    }
-  }
-  callback(response);
-}
-
-//return threads
-app.get("/threads/:type", function(req, res){
-  connection.query("SELECT * FROM thread WHERE Board=\""
-                  + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
-      regex(result, function(response){
-        clip(response, function(clip){
-          res.writeHead(200);
-          res.end(JSON.stringify(clip));
-        });
-    });
-  });
-});
-
-//return posts (comments are clipped)
-app.get("/posts/:type", function(req, res){
-  connection.query("SELECT * FROM post WHERE Thread=\""
-                  + req.params.type + "\"", function(err, result){
-    regex(result, function(response){
-      clip(response, function(clip){
-        res.writeHead(200);
-        res.end(JSON.stringify(clip));
-      });
-    });
-  });
-});
-
-//return populair threads
-app.get("/populair", function(req, res){
-  connection.query("SELECT thread.*, board.Title FROM board, thread WHERE board.id=thread.Board ORDER BY UpdatedTime DESC LIMIT 12", function(err, result){
-    regex(result, function(response){
-      clip(response, function(clip){
-        res.writeHead(200);
-        res.end(JSON.stringify(clip));
-      });
-    });
-  });
-});
-
-//return announcements
-app.get("/announcements", function(req, res){
-  connection.query("SELECT Comment FROM announcements WHERE CreationDate > NOW() - INTERVAL 1 DAY", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
-  });
-});
-
-
-//return stats
-app.get("/stats", function(req, res){
-  connection.query("SELECT MAX(Id) AS Count FROM post", function(err, result){
-    res.writeHead(200);
-    res.end(JSON.stringify(result));
-  });
-});
-
-//render thread
-app.get("/:board/thread/:type", function(req, res){
-  var type = req.params.type;
-  var board = req.params.board;
-
-  connection.query("SELECT Title, thread.Board FROM board, thread "
-                 + "WHERE thread.Id=\"" + type + "\" AND board.Id=\"" + board + "\"", function(err, result){
-    if(result[0] != null && result[0] != null && result[0].Board == board){
-      res.render("thread", {
-        thread: type,
-        board: board,
-        title: "/" + board + "/ - " + result[0].Title
-      });
-    } else {
-      res.render("default");
-    }
-  });
-});
-
-//render board
-app.get("/:type", function(req, res){
-  var type = req.params.type;
-
-  connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
-    if(result[0] == undefined){
-      res.render("default");
-      return;
-    }
-
-    res.render("board", {
-      board: type,
-      title: "/" + type + "/ - " + result[0].Title
-    });
-  });
-});
-
-//render catalog
-app.get("/:type/catalog", function(req, res){
-  var type = req.params.type;
-
-  connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
-    if(result[0] == undefined){
-      res.render("default");
-      return;
-    }
-
-    res.render("catalog", {
-      board: type,
-      title: "/" + type + "/ - " + result[0].Title
-    });
-  });
-});
-
-app.get("/", function(req, res){
-      res.render("home");
-});
-
-app.get("*", function(req, res){
-      res.render("default");
 });
 
 //posting

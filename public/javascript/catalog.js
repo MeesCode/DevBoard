@@ -1,6 +1,6 @@
 //get threads
 function getCatalog(boardId){
-  $.getJSON("/threads/" + boardId, function(result){
+  $.getJSON("/api/threads/" + boardId, function(result){
     for(var i = 0; i < result.length; i++){
       var li = document.createElement("li");
       li.className = "thread";
@@ -33,7 +33,7 @@ function getCatalog(boardId){
 }
 
 function getCounter(id){
-  $.getJSON("/counter/" + id, function(counter){
+  $.getJSON("/api/counter/" + id, function(counter){
     var thread = document.getElementById(id).getElementsByTagName("span")[0];
     thread.innerHTML += "<div class=\"info\">R: <b>" + counter[0].Posts + "</b> / I: <b>" + counter[0].Images + "</b></div>";
   });
@@ -41,7 +41,7 @@ function getCounter(id){
 
 //get boardlists on the top and bottom of the page
 function getBoardListCatalog(){
-  $.getJSON("/boardlist", function(result){
+  $.getJSON("/api/boardlist", function(result){
     var list = "[ ";
     for(var i = 0; i < result.length; i++){
       list += "<a href=\"/" + result[i].Id + "/catalog\"> " + result[i].Id +"</a>";

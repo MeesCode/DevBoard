@@ -1,7 +1,7 @@
 
 //get boards
 function getBoardListHome(){
-  $.getJSON("/boardlist", function(result){
+  $.getJSON("/api/boardlist", function(result){
     var content = "";
     for(var i = 0; i < result.length; i++){
       content += "<a href=\"/" + result[i].Id + "\"> " + result[i].Title +"</a><br/>";
@@ -12,7 +12,7 @@ function getBoardListHome(){
 
 //get stats
 function getStats(){
-  $.getJSON("/stats", function(result){
+  $.getJSON("/api/stats", function(result){
     var postCount = "<b>Total Posts: </b>" + result[0].Count;
     var content  = postCount;
     document.getElementById("statcontent").innerHTML = content;
@@ -21,7 +21,7 @@ function getStats(){
 
 //get threads
 function getPopulairThreads(){
-  $.getJSON("/populair", function(result){
+  $.getJSON("/api/popular", function(result){
     for(var i = 0; i < result.length; i++){
       var li = document.createElement("li");
       li.className = "thread";

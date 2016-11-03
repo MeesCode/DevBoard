@@ -107,7 +107,7 @@ function init(type, boardId, threadId){
 
 //get announcements
 function getAnnouncements(){
-  $.getJSON("/announcements", function(result){
+  $.getJSON("/api/announcements", function(result){
     var div = document.getElementById("announcements");
     if(result.length == 0){
       return;
@@ -121,7 +121,7 @@ function getAnnouncements(){
 
 //get boardlists on the top and bottom of the page
 function getBoardList(){
-  $.getJSON("/boardlist", function(result){
+  $.getJSON("/api/boardlist", function(result){
     var list = "[ ";
     for(var i = 0; i < result.length; i++){
       list += "<a href=\"/" + result[i].Id + "\"> " + result[i].Id +"</a>";
@@ -137,14 +137,14 @@ function getBoardList(){
 
 //get header image
 function getHeaderImage(){
-  $.get("/header", function(result){
+  $.get("/api/header", function(result){
     document.getElementById("headerImage").innerHTML = "<img src=\"/images/headers/" + result + "\">";
   });
 }
 
 //get reply and image count per thread
 function getCounter(id, callback){
-  $.getJSON("/counter/" + id, function(counter){
+  $.getJSON("/api/counter/" + id, function(counter){
     if(counter[0].Posts > amount){
       var thread = document.getElementById(id).getElementsByTagName("ul")[0];
       thread.innerHTML = "<div class=\"info omitted\">" + (counter[0].Posts - 5) + " replies and "
@@ -173,7 +173,7 @@ function getLines(id){
 
 function getPostComment(id){
   var comment = document.getElementById(id).getElementsByClassName("threadComment")[0];
-  $.getJSON("/postcomment/" + id, function(result){
+  $.getJSON("/api/postcomment/" + id, function(result){
     comment.innerHTML = result[0].Comment;
   });
   var list = document.getElementById(id).getElementsByTagName("ul")[0];
@@ -183,7 +183,7 @@ function getPostComment(id){
 
 //get threads
 function getThreads(type, boardId, threadId){
-  $.getJSON("/threads/" + boardId, function(result){
+  $.getJSON("/api/threads/" + boardId, function(result){
     for(var i = 0; i < result.length; i++){
       if(type == "thread" && threadId != result[i].Id){
         continue;
@@ -252,7 +252,7 @@ function getThreads(type, boardId, threadId){
 
 //get posts
 function getPosts(type, boardId, thread, callback){
-  $.getJSON("/posts/" + thread, function(posts){
+  $.getJSON("/api/posts/" + thread, function(posts){
     var postUl = document.createElement("ul");
 
     var postAmount = amount;
