@@ -3,7 +3,7 @@
   max-height: 125px;
   float: left;
   margin-top: 3px;
-  margin-right: 20px;
+  margin-right: 0px;
   margin-left: 0px;
   margin-bottom: 0px;
 }
@@ -13,7 +13,7 @@
   max-height: 125px;
   float: left;
   margin-top: 3px;
-  margin-right: 20px;
+  margin-right: 0px;
   margin-left: 0px;
   margin-bottom: 0px;
 }
@@ -50,4 +50,9 @@ li::before{
 
 .post p{
   margin-left: -15px;
+}
+
+.post .threadComment{
+  display: inline-block;
+  margin-left: 20px;
 }

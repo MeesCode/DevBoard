@@ -73,9 +73,9 @@ module.exports = {
 
   //return post comment
   getPostComment : function(req, res){
-    connection.query("SELECT IsThread FROM post WHERE Id=\""
+    connection.query("SELECT Id FROM post WHERE Id=\""
                     + req.params.type + "\"", function(err, result){
-        if(result[0].IsThread == 1){
+        if(result[0] == undefined){
           connection.query("SELECT Comment FROM thread WHERE Id=\""
                           + req.params.type + "\"", function(err, result){
             regex(result, function(response){
@@ -97,7 +97,7 @@ module.exports = {
 
   //return threads
   getThreads : function(req, res){
-    connection.query("SELECT * FROM thread WHERE Board=\""
+    connection.query("SELECT * FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
                     + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
         regex(result, function(response){
           clip(response, function(clip){
@@ -110,8 +110,10 @@ module.exports = {
 
   //return posts (comments are clipped)
   getPosts : function(req, res){
-    connection.query("SELECT * FROM post WHERE Thread=\""
-                    + req.params.type + "\"", function(err, result){
+    connection.query("SELECT post.*, image.OriginalName AS OriginalName, "
+                   + "image.Extention AS Extention, image.Spoiler AS Spoiler "
+                   + "FROM post LEFT JOIN image ON post.ImageId=image.Id WHERE Thread="
+                   + req.params.type + " ORDER BY post.Id ASC", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);
@@ -123,8 +125,8 @@ module.exports = {
 
   //return popular threads
   getPopular : function(req, res){
-    connection.query("SELECT thread.*, board.Title FROM board, thread "
-                   + "WHERE board.id=thread.Board ORDER BY UpdatedTime "
+    connection.query("SELECT board.Id AS Board, thread.Id, thread.Comment, thread.Name, thread.Subject, board.Title, image.Extention, thread.ImageId FROM image, board, thread "
+                   + "WHERE image.Id=thread.Id AND board.id=thread.Board ORDER BY UpdatedTime "
                    + "DESC LIMIT 12", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
@@ -138,7 +140,7 @@ module.exports = {
   //return announcements
   getAnnouncements : function(req, res){
     connection.query("SELECT Comment FROM announcements WHERE "
-                     + "CreationDate > NOW() - INTERVAL 1 DAY", function(err, result){
+                     + "CreationTime > NOW() - INTERVAL 1 DAY", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });
@@ -147,7 +149,7 @@ module.exports = {
 
   //return stats
   getStats : function(req, res){
-    connection.query("SELECT MAX(Id) AS Count FROM post", function(err, result){
+    connection.query("SELECT GREATEST(MAX(post.Id), MAX(thread.id)) AS Count FROM post, thread", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });

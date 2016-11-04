@@ -31,14 +31,12 @@ function getPopulairThreads(){
       if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
-      var mime = result[i].Image.split(".")[1];
-
-      if(videoFormats.indexOf(mime) != -1) {
-        var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><video preload=\"metadata\">"
-                  + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
+      if(videoFormats.indexOf(result[i].Extention) != -1) {
+        var image = "<a href=\"/"+boardId+"/thread/"+result[i].ImageId+"\"><video preload=\"metadata\">"
+                  + "<source src=\"/uploads/" + result[i].ImageId + "." + result[i].Extention +"\" type=\"video/"+result[i].Extention+"\"/>"
                   + "</video></a>";
-      } else if(imageFormats.indexOf(mime) != -1){
-        var image = "<a href=\"/"+result[i].Board+"/thread/"+result[i].Id+"\"><img src=\"/uploads/" + result[i].Image + "\"></a>";
+      } else if(imageFormats.indexOf(result[i].Extention) != -1){
+        var image = "<a href=\"/"+result[i].Board+"/thread/"+result[i].Id+"\"><img src=\"/uploads/" + result[i].ImageId + "." + result[i].Extention + "\"></a>";
       } else {
         var image = "<a href=\"/"+result[i].Board+"/thread/"+result[i].Id+"\"><img src=\"/images/placeholder.jpg\"/></a>";
       }

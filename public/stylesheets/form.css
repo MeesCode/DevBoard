@@ -25,6 +25,18 @@
   width: 43px;
 }
 
+#submitForm input[type=checkbox]{
+  width: auto;
+}
+
+#submitForm input[type=file]{
+  width: 214px;
+}
+
+#submitForm span{
+  font-size: 13px;
+}
+
 #submitForm tr{
   width: 323px;
   margin: 0px;
