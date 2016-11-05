@@ -56,3 +56,8 @@ li::before{
   display: inline-block;
   margin-left: 20px;
 }
+
+.post .threadComment a{
+  color: #D00;
+  text-decoration: underline;
+}
