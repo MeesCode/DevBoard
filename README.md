@@ -31,7 +31,6 @@ failed to achieve.
 
 <h4>installation:</h4>
 - make sure you have MySQL and node.js installed
-- make a folder called "uploads" in the public directory
 - change the database login credentials in the settings.js file
 - make sure the right port is used, also in the settings.js file
 
