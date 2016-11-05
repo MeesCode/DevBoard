@@ -1,15 +1,5 @@
 var multer = require("multer");
-var mysql = require("mysql");
-var settings = require("./../settings");
-
-//set database connection variables
-var connection = mysql.createConnection({
-  host     : settings.getHost,
-  user     : settings.getUser,
-  password : settings.getPassword,
-  database : settings.getDatabase
-});
-
+var db = require("./database");
 
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -17,7 +7,7 @@ var storage = multer.diskStorage({
   },
   filename: function (req, file, callback) {
     var filetype = file.mimetype.split("/")[1];
-    connection.query("SELECT MAX(Id)+1 AS Count FROM image", function(err, result){
+    db.connection.query("SELECT IFNULL(MAX(Id)+1, 1) AS Count FROM image", function(err, result){
       callback(null, result[0].Count + "." + filetype);
     });
   }
@@ -41,8 +31,13 @@ module.exports = function(app){
       var spoiler = 0;
     }
 
-    connection.query("SELECT GREATEST(MAX(post.Id), MAX(thread.id))+1 AS Id , "
-                   + "MAX(image.Id)+1 AS ImageId FROM post, thread, image", function(err, result){
+    db.connection.query("SELECT GREATEST(threadId.Result, postId.Result) + 1 AS Id, imageId.Result + 1 AS ImageId FROM ("
+	                     +"SELECT COALESCE(MAX(thread.Id), 0) AS Result FROM thread"
+	                     +") AS threadId, ("
+                       +"SELECT COALESCE(MAX(post.Id), 0) AS Result FROM post"
+                       +") AS postId, ("
+                       +"SELECT COALESCE(MAX(image.Id), 0) AS Result FROM image"
+                       +") AS imageId", function(err, result){
       if(req.body.type == "post"){
         post(req, res, result[0].Id, result[0].ImageId, name, comment, spoiler);
       } else {
@@ -55,30 +50,30 @@ module.exports = function(app){
 function post(req, res, id, imageid, name, comment, spoiler){
   console.log("post");
   if(req.file){
-    connection.query("INSERT INTO post (Id, Name, Comment, Thread, ImageId) "
+    db.connection.query("INSERT INTO post (Id, Name, Comment, Thread, ImageId) "
               + "VALUES (" + id + "," + name + ","
               + comment + ",\"" + req.body.belong + "\"," + imageid + ")");
-    connection.query("INSERT INTO image (OriginalName, Extention, spoiler) VALUES (\""
+    db.connection.query("INSERT INTO image (OriginalName, Extention, spoiler) VALUES (\""
                     + req.file.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
                     + spoiler + ")");
   } else {
-    connection.query("INSERT INTO post (Id, Name, Comment, Thread) "
+    db.connection.query("INSERT INTO post (Id, Name, Comment, Thread) "
               + "VALUES (\"" + id + "\"," + name + ","
               + comment + ",\"" + req.body.belong + "\")");
   }
-  connection.query("UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
+  db.connection.query("UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
               + req.body.belong + "\"");
-  connection.query("SELECT Board FROM thread WHERE Id=\"" + req.body.belong + "\"", function(err, result){
+  db.connection.query("SELECT Board FROM thread WHERE Id=\"" + req.body.belong + "\"", function(err, result){
     res.redirect("/" + result[0].Board + "/thread/" + req.body.belong);
   });
 }
 
 function thread(req, res, id, imageid, name, subject, comment, spoiler){
       console.log("thread");
-      connection.query("INSERT INTO thread (Id, Name, Subject, Comment, Board, ImageId) "
+      db.connection.query("INSERT INTO thread (Id, Name, Subject, Comment, Board, ImageId) "
                      + "VALUES (" + id + "," + name + "," + subject
                      + "," + comment + ",\"" + req.body.belong + "\"," + imageid + ")");
-      connection.query("INSERT INTO image (OriginalName, Extention, Spoiler) VALUES (\""
+      db.connection.query("INSERT INTO image (OriginalName, Extention, Spoiler) VALUES (\""
                       + req.file.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
                       + spoiler + ")");
       res.redirect("/" + req.body.belong + "/thread/" + id);
