@@ -128,9 +128,9 @@ module.exports = {
   getPopular : function(req, res){
     connection.query("SELECT board.Id AS Board, thread.Id, thread.Comment, "
                    + "thread.Name, thread.Subject, board.Title, image.Extention,"
-                   + " thread.ImageId FROM board, thread LEFT JOIN image ON "
+                   + " thread.ImageId, image.Spoiler FROM board, thread LEFT JOIN image ON "
                    + "image.Id=thread.ImageId WHERE board.id=thread.Board ORDER BY"
-                   + " UpdatedTime", function(err, result){
+                   + " UpdatedTime DESC", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);

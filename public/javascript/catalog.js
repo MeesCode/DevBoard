@@ -10,7 +10,9 @@ function getCatalog(boardId){
       if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
-      if(videoFormats.indexOf(result[i].Extention) != -1) {
+      if(result[i].Spoiler){
+        var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><img src=\"/images/spoiler.jpg\"/></a>";
+      } else if(videoFormats.indexOf(result[i].Extention) != -1) {
         var image = "<a href=\"/"+boardId+"/thread/"+result[i].Id+"\"><video preload=\"metadata\">"
                   + "<source src=\"/uploads/" + result[i].ImageId + "." + result[i].Extention +"\" type=\"video/"+result[i].Extention+"\"/>"
                   + "</video></a>";

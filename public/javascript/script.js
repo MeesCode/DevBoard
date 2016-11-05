@@ -19,6 +19,13 @@ function resize(id, index){
   }
 }
 
+function spoiler(id, index, src){
+  var element = document.getElementById(id);
+  media = element.getElementsByTagName("*")[index];
+  media.src = "/uploads/" + src;
+  resize(id, index);
+}
+
 //make sure every thread has an image
 $(function() {
     $('#boardForm').submit(function() {
@@ -197,7 +204,9 @@ function getThreads(type, boardId, threadId){
       if(result[i].Name == null) result[i].Name = "Anonymous";
       if(result[i].Comment == null) result[i].Comment = "";
 
-      if(videoFormats.indexOf(result[i].Extention) != -1) {
+      if(result[i].Spoiler){
+        var image = "<a onclick=\"spoiler(" + result[i].Id + ", 4,\'"+result[i].ImageId + "." + result[i].Extention +"\')\"><img src=\"/images/spoiler.jpg\"/></a>";
+      } else if(videoFormats.indexOf(result[i].Extention) != -1) {
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\""
                   + result[i].ImageId + "." + result[i].Extention +"\"><video controls preload=\"metadata\">"
                   + "<source src=\"/uploads/" +  result[i].ImageId + "." + result[i].Extention+"\" type=\"video/"+result[i].Extention+"\"/>"
@@ -272,7 +281,9 @@ function getPosts(type, boardId, thread, callback){
       if(posts[i].Name == null) posts[i].Name = "Anonymous";
       if(posts[i].Comment == null) posts[i].Comment = "";
 
-      if(videoFormats.indexOf(posts[i].Extention) != -1) {
+      if(posts[i].Spoiler){
+        var image = "<a onclick=\"spoiler(" + posts[i].Id + ", 7,\'"+posts[i].ImageId + "." + posts[i].Extention +"\')\"><img src=\"/images/spoiler.jpg\"/></a>";
+      } else if(videoFormats.indexOf(posts[i].Extention) != -1) {
         var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
                   + "<source src=\"/uploads/" + posts[i].ImageId + "." + posts[i].Extention +"\" type=\"video/"+posts[i].Extention+"\"/>"
                   + "</video></a>";
