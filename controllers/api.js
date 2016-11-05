@@ -44,10 +44,10 @@ module.exports = {
 
   //return amount of replies and images to in thread
   getCounter : function(req, res){
-    connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.Image) "
-                   + "As Images, COUNT(post.Image) - ANY_VALUE(temp2.ShownImages) "
+    connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.ImageId) "
+                   + "As Images, COUNT(post.ImageId) - ANY_VALUE(temp2.ShownImages) "
                    + "AS OmittedImages FROM post, (SELECT COUNT(temp.Images) As "
-                   + "ShownImages FROM (SELECT Image AS Images FROM post WHERE "
+                   + "ShownImages FROM (SELECT ImageId AS Images FROM post WHERE "
                    + "Thread="+req.params.thread+" ORDER BY Id DESC LIMIT 5) AS temp"
                    +") AS temp2 WHERE Thread=" +req.params.thread , function(err, result){
       res.writeHead(200);
@@ -97,7 +97,8 @@ module.exports = {
 
   //return threads
   getThreads : function(req, res){
-    connection.query("SELECT * FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
+    connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
+                    + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
                     + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
         regex(result, function(response){
           clip(response, function(clip){
@@ -125,9 +126,11 @@ module.exports = {
 
   //return popular threads
   getPopular : function(req, res){
-    connection.query("SELECT board.Id AS Board, thread.Id, thread.Comment, thread.Name, thread.Subject, board.Title, image.Extention, thread.ImageId FROM image, board, thread "
-                   + "WHERE image.Id=thread.Id AND board.id=thread.Board ORDER BY UpdatedTime "
-                   + "DESC LIMIT 12", function(err, result){
+    connection.query("SELECT board.Id AS Board, thread.Id, thread.Comment, "
+                   + "thread.Name, thread.Subject, board.Title, image.Extention,"
+                   + " thread.ImageId FROM board, thread LEFT JOIN image ON "
+                   + "image.Id=thread.ImageId WHERE board.id=thread.Board ORDER BY"
+                   + " UpdatedTime", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);

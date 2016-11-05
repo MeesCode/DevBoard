@@ -3,8 +3,6 @@ var multer = require("multer");
 var mysql = require("mysql");
 var settings = require("./../settings");
 
-var upload = multer({ dest: "tmp/" });
-
 //set database connection variables
 var connection = mysql.createConnection({
   host     : settings.getHost,
@@ -13,9 +11,26 @@ var connection = mysql.createConnection({
   database : settings.getDatabase
 });
 
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+      callback(null, "public/uploads");
+  },
+  filename: function (req, file, callback) {
+    var filetype = file.mimetype.split("/")[1];
+    console.log(filetype);
+    connection.query("SELECT MAX(Id) AS Count FROM image", function(err, result){
+      if(!result[0]){
+        callback(null, "0." + filetype);
+      }
+      callback(null, (result[0].Count + 1) + "." + filetype);
+    });
+  }
+})
+
 //posting
 module.exports = function(app){
-  app.post("/upload", upload.single("image"), function(req, res){
+  app.post("/upload", multer({ storage: storage }).single("image"), function(req, res){
     console.log("upload request");
 
     //make it so that the database stays clean
@@ -31,34 +46,35 @@ module.exports = function(app){
      //POSTS
       console.log("post");
 
-      //if there's an image upload
-      if(req.file){
         //get id
-        connection.query("SELECT MAX(Id) AS Id FROM post", function(err, result){
+        connection.query("SELECT GREATEST(MAX(post.Id), MAX(thread.id)) AS Id FROM post, thread", function(err, result){
+          if(!result[0]){
+            var id = 1;
+          }
           var id = result[0].Id + 1;
+          console.log(id);
 
-          var mime = req.file.mimetype.split("/")[1];
-          connection.query("INSERT INTO post (Name, Subject, Comment, Thread, Image) "
-                    + "VALUES (" + name + "," + subject
-                    + "," + comment + "," + req.body.belong + ",\"" + id+"."+mime + "\")");
-
-          //put image in the right spot
-          fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
+          if(req.file){
+            //if there is an image upload
+            connection.query("SELECT MAX(Id) AS Count FROM image", function(err, result){
+              connection.query("INSERT INTO post (Id, Name, Comment, Thread, ImageId) "
+                        + "VALUES (\"" + id + "\"," + name + ","
+                        + comment + ",\"" + req.body.belong + "\"," + (result[0].Count + 1) + ")");
+            });
+            connection.query("INSERT INTO image (OriginalName, Extention) VALUES (\"" + req.file.filename + "\",\"" + req.file.mimetype.split("/")[1] + "\")");
+          } else {
+            //if there is no image upload
+            connection.query("INSERT INTO post (Id, Name, Comment, Thread) "
+                      + "VALUES (\"" + id + "\"," + name + ","
+                      + comment + ",\"" + req.body.belong + "\")");
+          }
         });
-      }
-
-      //if there is no image upload
-      else {
-        connection.query("INSERT INTO post (Name, Subject, Comment, Thread) "
-                  + "VALUES (" + name + "," + subject
-                  + "," + comment + "," + req.body.belong + ")");
-      }
 
       //update thread update time
-      //some stuff about timezones
       connection.query("UPDATE thread SET UpdatedTime=NOW() WHERE Id=\""
                   + req.body.belong + "\"");
 
+      //redirect to thread
       connection.query("SELECT Board FROM thread WHERE Id=\"" + req.body.belong + "\"", function(err, result){
         res.redirect("/" + result[0].Board + "/thread/" + req.body.belong);
       });
@@ -68,24 +84,23 @@ module.exports = function(app){
     else{
       console.log("thread");
 
-      //add temporary thread to posts
-      connection.query("INSERT INTO post (IsThread, Thread) VALUES (TRUE, 0)");
-
       //get id
-      connection.query("SELECT MAX(Id) AS Id FROM post", function(err, result){
-        var id = result[0].Id;
+      connection.query("SELECT GREATEST(MAX(post.Id), MAX(thread.id)) AS Id FROM post, thread", function(err, result){
+        if(!result[0]){
+          var id = 1;
+        }
+        var id = result[0].Id + 1;
+        console.log(id);
 
-        var mime = req.file.mimetype.split("/")[1];
-        var query = "INSERT INTO thread (Id, Name, Subject, Comment, Board, Image) "
-                  + "VALUES (" + id + "," + name + "," + subject
-                  + "," + comment + ",\"" + req.body.belong + "\",\"" + id+"."+mime + "\")";
-        connection.query(query);
+        connection.query("SELECT MAX(Id) AS Count FROM image", function(err, result){
+          connection.query("INSERT INTO thread (Id, Name, Subject, Comment, Board, ImageId) "
+                    + "VALUES (\"" + id + "\"," + name + "," + subject
+                    + "," + comment + ",\"" + req.body.belong + "\"," + (result[0].Count + 1) + ")");
+        });
+
+        connection.query("INSERT INTO image (OriginalName, Extention) VALUES (\"" + req.file.filename + "\",\"" + req.file.mimetype.split("/")[1] + "\")");
 
         res.redirect("/" + req.body.belong + "/thread/" + id);
-
-        //threads always have images
-        var mime = req.file.mimetype.split("/")[1];
-        fs.rename(req.file.path, "public/uploads/"+id+"."+mime);
       });
     }
   });
