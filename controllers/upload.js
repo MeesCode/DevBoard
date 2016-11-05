@@ -1,4 +1,3 @@
-var fs = require("fs");
 var multer = require("multer");
 var mysql = require("mysql");
 var settings = require("./../settings");

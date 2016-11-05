@@ -200,7 +200,7 @@ function getThreads(type, boardId, threadId){
       if(videoFormats.indexOf(result[i].Extention) != -1) {
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\""
                   + result[i].ImageId + "." + result[i].Extention +"\"><video controls preload=\"metadata\">"
-                  + "<source src=\"/uploads/" + result[i].Image +"\" type=\"video/"+mime+"\"/>"
+                  + "<source src=\"/uploads/" +  result[i].ImageId + "." + result[i].Extention+"\" type=\"video/"+result[i].Extention+"\"/>"
                   + "</video></a>";
       } else if(imageFormats.indexOf(result[i].Extention) != -1){
         var image = "<a onclick=\"resize(" + result[i].Id + ", 4)\">"
