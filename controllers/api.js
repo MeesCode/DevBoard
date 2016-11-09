@@ -121,7 +121,7 @@ module.exports = {
                    + "thread.Name, thread.Subject, board.Title, image.Extention,"
                    + " thread.ImageId, image.Spoiler FROM board, thread LEFT JOIN image ON "
                    + "image.Id=thread.ImageId WHERE board.id=thread.Board ORDER BY"
-                   + " UpdatedTime DESC", function(err, result){
+                   + " UpdatedTime DESC LIMIT 12", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);
