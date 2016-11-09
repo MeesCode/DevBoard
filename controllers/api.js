@@ -1,14 +1,5 @@
-var mysql = require("mysql");
 var fs = require("fs");
-var settings = require("./../settings");
-
-//set database connection variables
-var connection = mysql.createConnection({
-  host     : settings.getHost,
-  user     : settings.getUser,
-  password : settings.getPassword,
-  database : settings.getDatabase
-});
+var db = require("./database");
 
 //clip thread and post comments to max 15 lines
 function clip(response, callback){
@@ -44,10 +35,10 @@ module.exports = {
 
   //return amount of replies and images to in thread
   getCounter : function(req, res){
-    connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.Image) "
-                   + "As Images, COUNT(post.Image) - ANY_VALUE(temp2.ShownImages) "
+    db.connection.query("SELECT COUNT(post.Id) AS Posts, COUNT(post.ImageId) "
+                   + "As Images, COUNT(post.ImageId) - ANY_VALUE(temp2.ShownImages) "
                    + "AS OmittedImages FROM post, (SELECT COUNT(temp.Images) As "
-                   + "ShownImages FROM (SELECT Image AS Images FROM post WHERE "
+                   + "ShownImages FROM (SELECT ImageId AS Images FROM post WHERE "
                    + "Thread="+req.params.thread+" ORDER BY Id DESC LIMIT 5) AS temp"
                    +") AS temp2 WHERE Thread=" +req.params.thread , function(err, result){
       res.writeHead(200);
@@ -65,7 +56,7 @@ module.exports = {
 
   //return board list
   getBoardlist : function(req, res){
-    connection.query("SELECT Id, Title FROM board", function(err, result){
+    db.connection.query("SELECT Id, Title FROM board", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });
@@ -73,10 +64,10 @@ module.exports = {
 
   //return post comment
   getPostComment : function(req, res){
-    connection.query("SELECT IsThread FROM post WHERE Id=\""
+    db.connection.query("SELECT Id FROM post WHERE Id=\""
                     + req.params.type + "\"", function(err, result){
-        if(result[0].IsThread == 1){
-          connection.query("SELECT Comment FROM thread WHERE Id=\""
+        if(result[0] == undefined){
+          db.connection.query("SELECT Comment FROM thread WHERE Id=\""
                           + req.params.type + "\"", function(err, result){
             regex(result, function(response){
               res.writeHead(200);
@@ -84,7 +75,7 @@ module.exports = {
             });
           });
         } else {
-          connection.query("SELECT Comment FROM post WHERE Id=\""
+          db.connection.query("SELECT Comment FROM post WHERE Id=\""
                           + req.params.type + "\"", function(err, result){
             regex(result, function(response){
               res.writeHead(200);
@@ -97,7 +88,8 @@ module.exports = {
 
   //return threads
   getThreads : function(req, res){
-    connection.query("SELECT * FROM thread WHERE Board=\""
+    db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
+                    + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
                     + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
         regex(result, function(response){
           clip(response, function(clip){
@@ -110,8 +102,10 @@ module.exports = {
 
   //return posts (comments are clipped)
   getPosts : function(req, res){
-    connection.query("SELECT * FROM post WHERE Thread=\""
-                    + req.params.type + "\"", function(err, result){
+    db.connection.query("SELECT post.*, image.OriginalName AS OriginalName, "
+                   + "image.Extention AS Extention, image.Spoiler AS Spoiler "
+                   + "FROM post LEFT JOIN image ON post.ImageId=image.Id WHERE Thread="
+                   + req.params.type + " ORDER BY post.Id ASC", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);
@@ -123,9 +117,11 @@ module.exports = {
 
   //return popular threads
   getPopular : function(req, res){
-    connection.query("SELECT thread.*, board.Title FROM board, thread "
-                   + "WHERE board.id=thread.Board ORDER BY UpdatedTime "
-                   + "DESC LIMIT 12", function(err, result){
+    db.connection.query("SELECT board.Id AS Board, thread.Id, thread.Comment, "
+                   + "thread.Name, thread.Subject, board.Title, image.Extention,"
+                   + " thread.ImageId, image.Spoiler FROM board, thread LEFT JOIN image ON "
+                   + "image.Id=thread.ImageId WHERE board.id=thread.Board ORDER BY"
+                   + " UpdatedTime DESC LIMIT 12", function(err, result){
       regex(result, function(response){
         clip(response, function(clip){
           res.writeHead(200);
@@ -137,8 +133,8 @@ module.exports = {
 
   //return announcements
   getAnnouncements : function(req, res){
-    connection.query("SELECT Comment FROM announcements WHERE "
-                     + "CreationDate > NOW() - INTERVAL 1 DAY", function(err, result){
+    db.connection.query("SELECT Comment FROM announcements WHERE "
+                     + "CreationTime > NOW() - INTERVAL 1 DAY", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });
@@ -147,7 +143,7 @@ module.exports = {
 
   //return stats
   getStats : function(req, res){
-    connection.query("SELECT MAX(Id) AS Count FROM post", function(err, result){
+    db.connection.query("SELECT GREATEST(IFNULL(MAX(post.Id), 0), IFNULL(MAX(thread.id), 0)) AS Count FROM post, thread", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });

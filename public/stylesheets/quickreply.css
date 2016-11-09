@@ -50,7 +50,11 @@
 }
 
 #quickreply input[type=file]{
-  width: auto;
+  width: 128px;
   float: left;
   margin: 0px;
+}
+
+#quickreply input[type=checkbox]{
+  width: auto;
 }

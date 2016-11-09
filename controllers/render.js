@@ -1,13 +1,5 @@
-var mysql = require("mysql");
+var db = require("./database");
 var settings = require("./../settings");
-
-//set database connection variables
-var connection = mysql.createConnection({
-  host     : settings.getHost,
-  user     : settings.getUser,
-  password : settings.getPassword,
-  database : settings.getDatabase
-});
 
 module.exports = {
 
@@ -16,7 +8,7 @@ module.exports = {
     var type = req.params.type;
     var board = req.params.board;
 
-    connection.query("SELECT Title, thread.Board FROM board, thread "
+    db.connection.query("SELECT Title, thread.Board FROM board, thread "
                    + "WHERE thread.Id=\"" + type + "\" AND "
                    + "board.Id=\"" + board + "\"", function(err, result){
       if(result[0] != null && result[0] != null && result[0].Board == board){
@@ -35,7 +27,7 @@ module.exports = {
   renderBoard : function(req, res){
     var type = req.params.type;
 
-    connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
+    db.connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
       if(result[0] == undefined){
         res.render("default");
         return;
@@ -52,7 +44,7 @@ module.exports = {
   renderCatalog : function(req, res){
     var type = req.params.type;
 
-    connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
+    db.connection.query("SELECT Title FROM board WHERE Id=\"" + type + "\"", function(err, result) {
       if(result[0] == undefined){
         res.render("default");
         return;
