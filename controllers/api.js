@@ -19,12 +19,16 @@ function clip(response, callback){
 }
 
 //change text so that it can be properly displayed on the web
-function regex(object, callback){
+function regex(object, home, callback){
   for(var post in object){
     if(object[post].Comment != null){
       object[post].Comment = object[post].Comment.replace(/</g, "&lt");
       object[post].Comment = object[post].Comment.replace(/>>(\d+)/g, "<a href=\"#$1\">&gt&gt$1</a>");
       object[post].Comment = object[post].Comment.replace(/(\n|\r|^)>(.*)/g, "<span class=\"greentext\">$1&gt$2</span>");
+      if(!home){
+        object[post].Comment = object[post].Comment.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/,
+        "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>");
+      }
       object[post].Comment = JSON.parse(JSON.stringify(object[post].Comment).replace(/\\n/g, "<br>"));
     }
   }
@@ -69,7 +73,7 @@ module.exports = {
         if(result[0] == undefined){
           db.connection.query("SELECT Comment FROM thread WHERE Id=\""
                           + req.params.type + "\"", function(err, result){
-            regex(result, function(response){
+            regex(result, false, function(response){
               res.writeHead(200);
               res.end(JSON.stringify(response));
             });
@@ -77,7 +81,7 @@ module.exports = {
         } else {
           db.connection.query("SELECT Comment FROM post WHERE Id=\""
                           + req.params.type + "\"", function(err, result){
-            regex(result, function(response){
+            regex(result, false, function(response){
               res.writeHead(200);
               res.end(JSON.stringify(response));
             });
@@ -91,7 +95,7 @@ module.exports = {
     db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
                     + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
                     + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
-        regex(result, function(response){
+        regex(result, false, function(response){
           clip(response, function(clip){
             res.writeHead(200);
             res.end(JSON.stringify(clip));
@@ -106,7 +110,7 @@ module.exports = {
                    + "image.Extention AS Extention, image.Spoiler AS Spoiler "
                    + "FROM post LEFT JOIN image ON post.ImageId=image.Id WHERE Thread="
                    + req.params.type + " ORDER BY post.Id ASC", function(err, result){
-      regex(result, function(response){
+      regex(result, false, function(response){
         clip(response, function(clip){
           res.writeHead(200);
           res.end(JSON.stringify(clip));
@@ -122,7 +126,7 @@ module.exports = {
                    + " thread.ImageId, image.Spoiler FROM board, thread LEFT JOIN image ON "
                    + "image.Id=thread.ImageId WHERE board.id=thread.Board ORDER BY"
                    + " UpdatedTime DESC LIMIT 12", function(err, result){
-      regex(result, function(response){
+      regex(result, true, function(response){
         clip(response, function(clip){
           res.writeHead(200);
           res.end(JSON.stringify(clip));
