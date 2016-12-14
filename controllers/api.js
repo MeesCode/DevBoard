@@ -104,6 +104,20 @@ module.exports = {
     });
   },
 
+  //return threads
+  getCatalogThreads : function(req, res){
+    db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
+                    + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
+                    + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
+        regex(result, true, function(response){
+          clip(response, function(clip){
+            res.writeHead(200);
+            res.end(JSON.stringify(clip));
+          });
+      });
+    });
+  },
+
   //return posts (comments are clipped)
   getPosts : function(req, res){
     db.connection.query("SELECT post.*, image.OriginalName AS OriginalName, "

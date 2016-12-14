@@ -1,6 +1,6 @@
 //get threads
 function getCatalog(boardId){
-  $.getJSON("/api/threads/" + boardId, function(result){
+  $.getJSON("/api/catalogthreads/" + boardId, function(result){
     for(var i = 0; i < result.length; i++){
       var li = document.createElement("li");
       li.className = "thread";

@@ -23,6 +23,7 @@ app.route("/api/header").get(api.getHeader);
 app.route("/api/boardlist").get(api.getBoardlist);
 app.route("/api/postcomment/:type").get(api.getPostComment);
 app.route("/api/threads/:type").get(api.getThreads);
+app.route("/api/catalogthreads/:type").get(api.getCatalogThreads);
 app.route("/api/posts/:type").get(api.getPosts);
 app.route("/api/popular").get(api.getPopular);
 app.route("/api/announcements").get(api.getAnnouncements);
