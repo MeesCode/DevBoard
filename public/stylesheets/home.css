@@ -123,3 +123,8 @@ ul{
   text-decoration: underline;
   color: #00E;
 }
+
+.nsfw{
+  font-size: 10px;
+  color: #e00;
+}

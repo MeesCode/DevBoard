@@ -60,7 +60,7 @@ module.exports = {
 
   //return board list
   getBoardlist : function(req, res){
-    db.connection.query("SELECT Id, Title FROM board", function(err, result){
+    db.connection.query("SELECT Id, Title, Nsfw FROM board", function(err, result){
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });

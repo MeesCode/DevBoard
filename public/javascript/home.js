@@ -4,7 +4,11 @@ function getBoardListHome(){
   $.getJSON("/api/boardlist", function(result){
     var content = "";
     for(var i = 0; i < result.length; i++){
-      content += "<a href=\"/" + result[i].Id + "\"> " + result[i].Title +"</a><br/>";
+      if(result[i].Nsfw){
+        content += "<a href=\"/" + result[i].Id + "\"> " + result[i].Title +"</a><b><span class=\"nsfw\"> (NSFW)</span></b><br/>";
+      } else {
+        content += "<a href=\"/" + result[i].Id + "\"> " + result[i].Title +"</a><br/>";
+      }
     }
     document.getElementById("boardlist").innerHTML = content;
   });
