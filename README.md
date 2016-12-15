@@ -30,7 +30,7 @@ failed to achieve.
 - user post deletion
 
 <h4>installation:</h4>
-- make sure you have MySQL and node.js installed
+- make sure you have MySQL 5.6.5 and node.js (w/ node_legacy) installed
 - change the database login credentials in the settings.js file
 - make sure the right port is used, also in the settings.js file
 
