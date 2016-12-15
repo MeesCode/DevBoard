@@ -2,8 +2,6 @@
 .ui-dialog {
   padding: 1px;
   padding-bottom: 0px;
-  background-color: #D6DAF0;
-  border: 1px solid rgb(183, 197, 217);
   text-align: left;
   outline: none;
   position: fixed;
@@ -12,7 +10,6 @@
 .ui-dialog-titlebar {
   width: 298px;
   height: 18px;
-  background-color: #98E;
   font-size: 10pt;
   text-align: center;
   border: 1px solid black;
@@ -24,7 +21,6 @@
 
 .ui-button {
   float: right;
-  background: url(../images/cross.png) no-repeat;
   border: none;
   color: transparent;
   width: 18px;

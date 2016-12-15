@@ -136,7 +136,7 @@ function getBoardList(){
         list += " / ";
       }
     }
-    list += " ] <span id=\"home\">[<a href=\"/\">Home</a>]</span>";
+    list += " ] <span class=\"home\">[<a href=\"/\">Home</a>]</span>";
     document.getElementsByClassName("boardlist")[0].innerHTML = list;
     document.getElementsByClassName("boardlist")[1].innerHTML = list;
   });
@@ -226,9 +226,9 @@ function getThreads(type, boardId, threadId){
       var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
 
       if(type == "thread"){
-        var id = "No.<a onclick=\"postlinkThread(" + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + result[i].Id + ")\">" + result[i].Id + "</a>   ";
       } else {
-        var id = "No.<a onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
       }
 
       if(type == "board"){
@@ -299,9 +299,9 @@ function getPosts(type, boardId, thread, callback){
       var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
 
       if(type == "thread"){
-        var id = "No.<a onclick=\"postlinkThread(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+        var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
       } else {
-        var id = "No.<a onclick=\"postlinkBoard(" + posts[i].Thread + ", " + posts[i].Id + ")\">" + posts[i].Id + "</a>   ";
+        var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + posts[i].Thread + ", " + posts[i].Id + ")\">" + posts[i].Id + "</a>   ";
       }
 
       if(posts[i].ImageId != null){

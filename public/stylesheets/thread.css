@@ -40,13 +40,11 @@
 .threadSubject{
   display: inline;
   font-weight: bold;
-  color: #0F0C5D;
 }
 
 .threadName{
   display: inline;
   font-weight: bold;
-  color: #117743;
 }
 
 .threadReply{
@@ -60,5 +58,4 @@
 
 .info{
   font-size: 10pt;
-  color: #707070;
 }

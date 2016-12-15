@@ -20,10 +20,9 @@
 
 .post {
   display: table;
-  background-color: #D6DAF0;
   padding: 2px;
   padding-top: 5px;
-  border: 1px solid #B7C5D9;
+  border: 1px solid black;
   border-top: none;
   border-left: none;
   margin-top: 4px;
@@ -35,8 +34,7 @@
 }
 
 .post:target{
-  background-color: #D6BAD0;
-  border: 1px solid #BA9DBF;
+  border: 1px solid black;
   border-top: none;
   border-left: none;
 }

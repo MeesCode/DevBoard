@@ -114,6 +114,12 @@ ul{
 }
 
 #credits{
+  color: black;
   text-align: center;
   font-size: 7pt;
+}
+
+#credits a{
+  text-decoration: underline;
+  color: #00E;
 }

@@ -1,0 +1,75 @@
+body{
+  background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
+}
+
+#title{
+  color: #AF0A0F;
+}
+
+#headerImage img{
+  border: 1px solid #34345C;
+}
+
+.boardlist{
+  color: #8899AA;
+}
+
+.boardlist a{
+  color: #34345C;
+}
+
+a{
+  color: #34345C;
+}
+
+a:hover{
+  color: #DD0000;
+}
+
+hr{
+  border: none;
+  border-top: 1px solid #B7C5D9;
+}
+
+.post {
+  border: 1px solid #B7C5D9;
+  background-color: #D6DAF0;
+  border-top: none;
+  border-left: none;
+}
+
+.post:target{
+  background-color: #D6BAD0;
+  border: 1px solid #BA9DBF;
+  border-top: none;
+  border-left: none;
+}
+
+#submitForm td:first-child{
+  background-color: #98E;
+}
+
+.threadSubject{
+  color: #0F0C5D;
+}
+
+.threadName{
+  color: #117743;
+}
+
+.info{
+  color: black;
+}
+
+.ui-button {
+  background: url(../images/cross.png) no-repeat;
+}
+
+.ui-dialog-titlebar {
+  background-color: #98E;
+}
+
+.ui-dialog {
+  background-color: #D6DAF0;
+  border: 1px solid rgb(183, 197, 217);
+}

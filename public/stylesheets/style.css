@@ -1,7 +1,6 @@
 body{
   font-family: arial,helvetica,sans-serif;
   font-size: 10pt;
-  background: #EEF2FF url(../images/fade-blue.png) top center repeat-x;
 }
 
 .utils a{
@@ -13,7 +12,6 @@ body{
 }
 
 #title{
-  color: #AF0A0F;
   text-align: center;
   width: 100%;
   font-family: tahoma, sans-serif;
@@ -31,21 +29,16 @@ body{
 }
 
 #headerImage img{
-  border: 1px solid #34345C
+  border: 1px solid black;
 }
 
-.boardlist{
-  font-size: 9pt;
-  color: #89A;
-}
-
-.boardlist #home{
+.boardlist .home{
   float: right;
 }
 
 .boardlist a{
+  font-size: 9pt;
   text-decoration: none;
-  color: #34345C;
 }
 
 .thread ul{
@@ -59,18 +52,16 @@ body{
 }
 
 a{
-  color: #34345C;
   cursor: pointer;
 }
 
 a:hover{
   text-decoration: none;
-  color: #DD0000;
 }
 
 hr{
   border: none;
-  border-top: 1px solid #B7C5D9;
+  border-top: 1px solid black;
   width: 100%;
   height: 0px;
   margin-top: 7px;

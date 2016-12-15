@@ -1,0 +1,87 @@
+body{
+  background: #ffe url(/images/fade.png) top center repeat-x;
+}
+
+#title{
+  color: #AF0A0F;
+}
+
+#headerImage img{
+  border: 1px solid #800000;
+}
+
+.boardlist{
+  color: #BB8866;
+}
+
+.boardlist a{
+  color: #800000;
+}
+
+a{
+  color: #00E;
+}
+
+.thread{
+  color: #800000;
+}
+
+.counter{
+  color: #800000;
+}
+
+a:hover{
+  color: #DD0000;
+}
+
+hr{
+  border: none;
+  border-top: 1px solid #D9BFB7;
+}
+
+.post {
+  background-color: #f0e0d6;
+  border: 1px solid #D9BFB7;
+  border-top: none;
+  border-left: none;
+}
+
+.post:target{
+  background-color: #F0C0B0;
+  border: 1px solid #D99F91;
+  border-top: none;
+  border-left: none;
+}
+
+#submitForm td:first-child{
+  color: #800;
+  border: 1px solid #800;
+  background-color: #EA8;
+}
+
+.threadSubject{
+  color: #cc1105;
+}
+
+.threadName{
+  color: #117743;
+}
+
+.info{
+  color: black;
+}
+
+.ui-button {
+  background: url(../images/cross2.png) no-repeat;
+}
+
+.ui-dialog-titlebar {
+  background-color: #EA8;
+  border: 1px solid #800;
+  color: #800;
+}
+
+.ui-dialog {
+  background-color: #f0e0d6;
+  border: 1px solid rgb(183, 197, 217);
+}
