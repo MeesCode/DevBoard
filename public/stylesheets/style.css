@@ -39,6 +39,10 @@ body{
   color: #89A;
 }
 
+.boardlist #home{
+  float: right;
+}
+
 .boardlist a{
   text-decoration: none;
   color: #34345C;

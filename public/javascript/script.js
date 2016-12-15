@@ -136,7 +136,7 @@ function getBoardList(){
         list += " / ";
       }
     }
-    list += " ] [<a href=\"/\">Home</a>]";
+    list += " ] <span id=\"home\">[<a href=\"/\">Home</a>]</span>";
     document.getElementsByClassName("boardlist")[0].innerHTML = list;
     document.getElementsByClassName("boardlist")[1].innerHTML = list;
   });
