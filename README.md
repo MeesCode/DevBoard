@@ -21,6 +21,7 @@ failed to achieve.
 - post counter
 - quick reply
 - spoiler images
+- closed and/or stickied threads
 
 <h4>planned features:</h4>
 - board linking
