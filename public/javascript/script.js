@@ -259,7 +259,7 @@ function getThreads(type, boardId, threadId){
       }
       if(type == "thread"){
         li.innerHTML = filelink + "<br/>" + image + subject + name + date
-                     + id + "<br/>" + "<br/>" + comment;
+                     + id + sticky + closed + "<br/>" + "<br/>" + comment;
       }
 
       document.getElementById("threads").appendChild(hr);
