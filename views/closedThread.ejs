@@ -1,0 +1,67 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <title><%= title %></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/javascript/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/post.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/thread.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/<%= theme %>">
+  </head>
+  <body onload="init('thread', '<%= board %>', <%= thread %>)">
+
+    <div id="header">
+      <div class="boardlist"></div>
+      <div id="headerImage"></div>
+      <div id="title">
+        <h1><%= title %></h1>
+      </div>
+      <hr>
+        <h2 id="closedMessage">
+          Thread closed.<br/>
+          You may not reply at this time.
+        </h2>
+      <div id="announcements">
+      </div>
+    </div>
+
+    <hr>
+    <div class="utils">
+      [<a href="/<%= board %>/catalog">Catalog</a>]
+      [<a href="/<%= board %>">Return</a>]
+      [<a href="#footer">Bottom</a>]
+      [<a href="./<%= thread %>">Update</a>]
+    </div>
+
+    <div id="content">
+      <ul id="threads">
+      </ul>
+    </div>
+
+    <script>
+      $( function() {
+        $( "#quickreply" ).dialog({
+          autoOpen: false
+        });
+      } );
+    </script>
+
+    <hr>
+    <div class="utils">
+      [<a href="/<%= board %>/catalog">Catalog</a>]
+      [<a href="/<%= board %>">Return</a>]
+      [<a href="#header">Top</a>]
+      [<a href="./<%= thread %>">Update</a>]
+    </div>
+
+    <hr>
+    <div id="footer">
+      <div class="boardlist"></div>
+      <div id="credits">
+        Imageboard based on <a href="https://github.com/MeesCode/DevBoard">DevBoard</a> by Mees Brinkhuis.
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -76,3 +76,22 @@ hr{
   text-align: center;
   font-size: 7pt;
 }
+
+.thread .sticky img{
+  margin: 0px;
+  float: inherit;
+}
+
+.thread .closed img{
+  margin: 0px;
+  float: inherit;
+}
+
+#closedMessage{
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}

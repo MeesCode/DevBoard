@@ -94,7 +94,7 @@ module.exports = {
   getThreads : function(req, res){
     db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
                     + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
-                    + req.params.type + "\" ORDER BY UpdatedTime DESC", function(err, result){
+                    + req.params.type + "\" ORDER BY Pinned DESC, UpdatedTime DESC", function(err, result){
         regex(result, false, function(response){
           clip(response, function(clip){
             res.writeHead(200);

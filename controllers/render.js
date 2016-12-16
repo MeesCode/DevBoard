@@ -10,7 +10,7 @@ module.exports = {
     var type = req.params.type;
     var board = req.params.board;
 
-    db.connection.query("SELECT Title, thread.Board, board.Nsfw FROM board, thread "
+    db.connection.query("SELECT Title, thread.Board, board.Nsfw, thread.Closed FROM board, thread "
                    + "WHERE thread.Id=\"" + type + "\" AND "
                    + "board.Id=\"" + board + "\"", function(err, result){
       if(result[0] != null && result[0].Board == board){
@@ -20,7 +20,17 @@ module.exports = {
         } else {
           var css = sfw;
         }
-        
+
+        if(result[0].Closed){
+          res.render("closedThread", {
+            theme: css,
+            thread: type,
+            board: board,
+            title: "/" + board + "/ - " + result[0].Title
+          });
+          return;
+        }
+
         res.render("thread", {
           theme: css,
           thread: type,

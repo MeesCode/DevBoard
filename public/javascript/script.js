@@ -188,6 +188,10 @@ function getPostComment(id){
   list.removeChild(info);
 }
 
+function alertClosed(){
+  alert("This thread is closed.");
+}
+
 //get threads
 function getThreads(type, boardId, threadId){
   $.getJSON("/api/threads/" + boardId, function(result){
@@ -226,14 +230,32 @@ function getThreads(type, boardId, threadId){
       var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
 
       if(type == "thread"){
-        var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        if(!result[i].Closed){
+          var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        } else {
+          var id = "No.<a class=\"counter\" onclick=\"alertClosed()\")\">" + result[i].Id + "</a>   ";
+        }
       } else {
-        var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        if(!result[i].Closed){
+          var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + result[i].Id + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        } else {
+          var id = "No.<a class=\"counter\" onclick=\"alertClosed()\")\">" + result[i].Id + "</a>   ";
+        }
+      }
+
+      var sticky = "";
+      if(result[i].Pinned){
+        var sticky = "<span class=\"sticky\"><img title=\"Sticky\" src=\"/images/sticky.gif\"></span>";
+      }
+
+      var closed = "";
+      if(result[i].Closed){
+        var closed = "<span class=\"closed\"><img title=\"Closed\" src=\"/images/closed.gif\"></span>";
       }
 
       if(type == "board"){
         li.innerHTML = filelink + "<br/>" + image + subject + name + date
-                     + id + reply + "<br/>" + "<br/>" + comment;
+                     + id + sticky + closed + reply + "<br/>" + "<br/>" + comment;
       }
       if(type == "thread"){
         li.innerHTML = filelink + "<br/>" + image + subject + name + date
@@ -243,14 +265,14 @@ function getThreads(type, boardId, threadId){
       document.getElementById("threads").appendChild(hr);
       document.getElementById("threads").appendChild(li);
 
-      getPosts(type, boardId, result[i].Id, function(id){
+      getPosts(type, boardId, result[i].Closed, result[i].Id, function(id){
         if(type == "board"){
           getCounter(id);
         }
         getLines(id);
         var posts = document.getElementById(id).getElementsByClassName("post");
         for(var j = 0; j < posts.length; j++){
-          getLines(posts[j].id);
+          getLines(result[j].id);
         }
       });
     }
@@ -258,8 +280,8 @@ function getThreads(type, boardId, threadId){
 }
 
 //get posts
-function getPosts(type, boardId, thread, callback){
-  $.getJSON("/api/posts/" + thread, function(posts){
+function getPosts(type, boardId, closed, thread, callback){
+  $.getJSON("/api/posts/" + thread, function(result){
     var postUl = document.createElement("ul");
 
     var postAmount = amount;
@@ -267,44 +289,52 @@ function getPosts(type, boardId, thread, callback){
       postAmount = Number.MAX_SAFE_INTEGER;
     }
 
-    if(posts.length >= postAmount){
-      var start = posts.length - postAmount;
+    if(result.length >= postAmount){
+      var start = result.length - postAmount;
     } else {
       var start = 0;
     }
 
-    for(var i = start; i < posts.length && i < start + postAmount; i++){
+    for(var i = start; i < result.length && i < start + postAmount; i++){
       var postIl = document.createElement("li");
       postIl.className = "post";
-      postIl.id = posts[i].Id;
+      postIl.id = result[i].Id;
 
-      if(posts[i].Name == null) posts[i].Name = "Anonymous";
-      if(posts[i].Comment == null) posts[i].Comment = "";
+      if(result[i].Name == null) result[i].Name = "Anonymous";
+      if(result[i].Comment == null) result[i].Comment = "";
 
-      if(posts[i].Spoiler){
-        var image = "<a onclick=\"spoiler(" + posts[i].Id + ", 7,\'"+posts[i].ImageId + "." + posts[i].Extention +"\')\"><img src=\"/images/spoiler.jpg\"/></a>";
-      } else if(videoFormats.indexOf(posts[i].Extention) != -1) {
-        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
-                  + "<source src=\"/uploads/" + posts[i].ImageId + "." + posts[i].Extention +"\" type=\"video/"+posts[i].Extention+"\"/>"
+      if(result[i].Spoiler){
+        var image = "<a onclick=\"spoiler(" + result[i].Id + ", 7,\'"+result[i].ImageId + "." + result[i].Extention +"\')\"><img src=\"/images/spoiler.jpg\"/></a>";
+      } else if(videoFormats.indexOf(result[i].Extention) != -1) {
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 7)\"><video controls  applypreload=\"metadata\">"
+                  + "<source src=\"/uploads/" + result[i].ImageId + "." + result[i].Extention +"\" type=\"video/"+result[i].Extention+"\"/>"
                   + "</video></a>";
-      } else if(imageFormats.indexOf(posts[i].Extention) != -1){
-        var image = "<a onclick=\"resize(" + posts[i].Id + ", 7)\"><img src=\"/uploads/" + posts[i].ImageId + "." + posts[i].Extention + "\"></a>";
+      } else if(imageFormats.indexOf(result[i].Extention) != -1){
+        var image = "<a onclick=\"resize(" + result[i].Id + ", 7)\"><img src=\"/uploads/" + result[i].ImageId + "." + result[i].Extention + "\"></a>";
       } else {
         var image = "<img src=\"/images/placeholder.jpg\"/>";
       }
 
-      var filelink = "File: <u><a href=\"/uploads/" + posts[i].ImageId + "." + posts[i].Extention + "\"/>" + posts[i].OriginalName + "</a></u>";
-      var name = "<p class=\"threadName\">" + posts[i].Name + " " +"</p>";
-      var date = posts[i].CreationTime.replace("T", " ").replace(".000Z", "")+" ";
-      var comment = "<div class=\"threadComment\">" + posts[i].Comment + "</div>";
+      var filelink = "File: <u><a href=\"/uploads/" + result[i].ImageId + "." + result[i].Extention + "\"/>" + result[i].OriginalName + "</a></u>";
+      var name = "<p class=\"threadName\">" + result[i].Name + " " +"</p>";
+      var date = result[i].CreationTime.replace("T", " ").replace(".000Z", "")+" ";
+      var comment = "<div class=\"threadComment\">" + result[i].Comment + "</div>";
 
       if(type == "thread"){
-        var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + posts[i].Id + ")\"" + posts[i].Id + "\">" + posts[i].Id + "</a>   ";
+        if(!closed){
+          var id = "No.<a class=\"counter\" onclick=\"postlinkThread(" + result[i].Id + ")\"" + result[i].Id + "\">" + result[i].Id + "</a>   ";
+        } else {
+          var id = "No.<a class=\"counter\" onclick=\"alertClosed()\")\">" + result[i].Id + "</a>   ";
+        }
       } else {
-        var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + posts[i].Thread + ", " + posts[i].Id + ")\">" + posts[i].Id + "</a>   ";
+        if(!closed){
+          var id = "No.<a class=\"counter\" onclick=\"postlinkBoard(" + result[i].Thread + ", " + result[i].Id + ")\">" + result[i].Id + "</a>   ";
+        } else {
+          var id = "No.<a class=\"counter\" onclick=\"alertClosed()\")\">" + result[i].Id + "</a>   ";
+        }
       }
 
-      if(posts[i].ImageId != null){
+      if(result[i].ImageId != null){
         postIl.innerHTML += name + date + id + "<br/>" + filelink + "<br/>" + image + comment + "<ul></ul>";
       } else {
         postIl.innerHTML += name + date + id + "<br/>" + "<br/>" + comment + "<ul></ul>";
