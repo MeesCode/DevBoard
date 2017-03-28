@@ -66,6 +66,16 @@ module.exports = {
     });
   },
 
+  //return amount of pages on a board
+  getPageCount : function(req, res){
+    db.connection.query("SELECT COUNT(*) AS Count FROM thread WHERE Board=\"" + req.params.board + "\"", function(err, result){
+      result[0].Count = Math.ceil(result[0].Count / 15);
+      res.writeHead(200);
+      res.end(JSON.stringify(result));
+    });
+  },
+
+
   //return post comment
   getPostComment : function(req, res){
     db.connection.query("SELECT Id FROM post WHERE Id=\""
@@ -92,9 +102,11 @@ module.exports = {
 
   //return threads
   getThreads : function(req, res){
+    if(req.params.page == undefined)
+      req.params.page = 1;
     db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
                     + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE image.Id=thread.imageId AND Board=\""
-                    + req.params.type + "\" ORDER BY Pinned DESC, UpdatedTime DESC", function(err, result){
+                    + req.params.type + "\" ORDER BY Pinned DESC, UpdatedTime DESC LIMIT " + ((req.params.page - 1) * 15) + "," + (((req.params.page - 1) * 15) + 14), function(err, result){
         regex(result, false, function(response){
           clip(response, function(clip){
             res.writeHead(200);
@@ -103,6 +115,20 @@ module.exports = {
       });
     });
   },
+
+  //return single thread
+  getThread : function(req, res){
+    db.connection.query("SELECT thread.*, image.OriginalName AS OriginalName, "
+                    + "image.Extention AS Extention, image.Spoiler AS Spoiler FROM thread, image WHERE thread.Id=\"" + req.params.type + "\" AND image.Id=thread.imageId", function(err, result){
+        regex(result, false, function(response){
+          clip(response, function(clip){
+            res.writeHead(200);
+            res.end(JSON.stringify(clip));
+          });
+      });
+    });
+  },
+
 
   //return threads
   getCatalogThreads : function(req, res){

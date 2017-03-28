@@ -18,6 +18,22 @@ body{
   color: #34345C;
 }
 
+#boardPage{
+  background-color: #D6DAF0;
+  color: #707070;
+  border: 1px solid #B7C5D9;
+  border-top: none;
+  border-left: none;
+}
+
+#boardPage .catalogButton{
+  border-left: 1px solid #B7C5D9;
+}
+
+#pageIndicator{
+  color: #34345C;
+}
+
 a{
   color: #34345C;
 }
@@ -57,10 +73,6 @@ hr{
   color: #117743;
 }
 
-.info{
-  color: black;
-}
-
 .ui-button {
   background: url(../images/cross.png) no-repeat;
 }
@@ -72,4 +84,8 @@ hr{
 .ui-dialog {
   background-color: #D6DAF0;
   border: 1px solid rgb(183, 197, 217);
+}
+
+.info {
+  color: #707070;
 }

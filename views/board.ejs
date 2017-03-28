@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/quickreply.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/<%= theme %>">
   </head>
-  <body onload="init('board','<%= board %>', null)">
+  <body onload="init('board','<%= board %>', null, <%= page %>)">
 
     <div id="header">
       <div class="boardlist"></div>
@@ -83,6 +83,9 @@
         <input id="selectImage" type="file" name="image">
         <span id="spoiler">[<input type="checkbox" name="spoiler">Spoiler?]</span>
         <input type="submit" value="Post">
+    </div>
+
+    <div id="boardPage">
     </div>
 
     <div id="footer">

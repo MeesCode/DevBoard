@@ -106,42 +106,20 @@ function postlinkBoard(threadId, postId){
 
 //initialize page
 function init(type, boardId, threadId, page){
-  if(type == "board" && (page == undefined || page == null || !Number.isInteger(page) || page < 1)){
-    window.location = "/" + boardId;
-    return;
-  }
-  if(type == "board")
-    getPageCount(boardId, page);
   getBoardList();
   getHeaderImage();
   getThreads(type, boardId, threadId, page);
   getAnnouncements();
+  if(type == "board");
+    getBoardPages(boardId);
 }
 
-//get the amount of pages on a board
-function getPageCount(boardId, page){
-  $.getJSON("/api/pagecount/" + boardId, function(result){
-    if(page < 1 || page > result[0].Count){
-      window.location = "/dealWithItNerd";
-      return;
-    }
-    var content = "";
-    if(page != 1)
-      content += "<a href=\"/" + boardId + "/" + (page - 1) + "\"><input type=\"button\" value=\"Previous\"></a> ";
-    var div = document.getElementById("boardPage");
-    for(var i = 1; i <= result[0].Count; i++){
-      if(i == page)
-        content += "[<span id=\"pageIndicator\">" + i + "</span>]";
-      else
-        content += "[<a href=\"/" + boardId + "/" + i + "\">" + i + "</a>]";
+//get board page selector
+function getBoardPages(boardId){
+  var content
+  $.getJSON("/api/pagecount/" + boadId, function(result){
+    for(var i = 0; i < result.Count; i++){
       
-      content += " ";
-    }
-    if(result[0].Count != page)
-      content += " <a href=\"/" + boardId + "/" + (page + 1) + "\"><input type=\"button\" value=\"Next\"></a>";
-    content += "<a href=\"/" + boardId + "/catalog\"><span class=\"catalogButton\"> Catalog </span></a>";
-    div.innerHTML = content;
-  });
 }
 
 
@@ -310,7 +288,7 @@ function getThreads(type, boardId, threadId, page){
         getLines(id);
         var posts = document.getElementById(id).getElementsByClassName("post");
         for(var j = 0; j < posts.length; j++){
-          getLines(posts[j].id);
+          getLines(result[j].id);
         }
       });
     }

@@ -46,6 +46,9 @@ module.exports = {
   //render board
   renderBoard : function(req, res){
     var type = req.params.type;
+    var pageNum = req.params.page;
+    if(pageNum == undefined)
+      pageNum = 1;    
 
     db.connection.query("SELECT Title, Nsfw FROM board WHERE Id=\"" + type + "\"", function(err, result) {
       if(result[0] == undefined){
@@ -62,6 +65,7 @@ module.exports = {
       res.render("board", {
         theme: css,
         board: type,
+        page: pageNum,
         title: "/" + type + "/ - " + result[0].Title
       });
     });

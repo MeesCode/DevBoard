@@ -22,16 +22,19 @@ app.route("/api/counter/:thread").get(api.getCounter);
 app.route("/api/header").get(api.getHeader);
 app.route("/api/boardlist").get(api.getBoardlist);
 app.route("/api/postcomment/:type").get(api.getPostComment);
-app.route("/api/threads/:type").get(api.getThreads);
+app.route("/api/threads/:type/:page").get(api.getThreads);
+app.route("/api/thread/:type").get(api.getThread);
 app.route("/api/catalogthreads/:type").get(api.getCatalogThreads);
 app.route("/api/posts/:type").get(api.getPosts);
 app.route("/api/popular").get(api.getPopular);
 app.route("/api/announcements").get(api.getAnnouncements);
 app.route("/api/stats").get(api.getStats);
+app.route("/api/pagecount/:board").get(api.getPageCount);
 
 //routes for pages
 app.route("/:type/catalog").get(render.renderCatalog);
 app.route("/:board/thread/:type").get(render.renderThread);
-app.route("/:type").get(render.renderBoard);
+app.route("/:type/:page").get(render.renderBoard);
+app.route("/:type/").get(render.renderBoard);
 app.route("/").get(render.renderHome);
 app.route("*").get(render.renderPageNotFound);
