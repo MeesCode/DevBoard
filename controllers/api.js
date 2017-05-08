@@ -69,7 +69,7 @@ module.exports = {
   //return amount of pages on a board
   getPageCount : function(req, res){
     db.connection.query("SELECT COUNT(*) AS Count FROM thread WHERE Board=\"" + req.params.board + "\"", function(err, result){
-      result[0].Count = Math.ceil(result[0].Count / 15);
+      result[0].Count = Math.max(Math.ceil(result[0].Count / 15), 1);
       res.writeHead(200);
       res.end(JSON.stringify(result));
     });
