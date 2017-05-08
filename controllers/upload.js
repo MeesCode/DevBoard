@@ -54,7 +54,7 @@ function post(req, res, id, imageid, name, comment, spoiler){
               + "VALUES (" + id + "," + name + ","
               + comment + ",\"" + req.body.belong + "\"," + imageid + ")");
     db.connection.query("INSERT INTO image (OriginalName, Extention, spoiler) VALUES (\""
-                    + req.file.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
+                    + req.body.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
                     + spoiler + ")");
   } else {
     db.connection.query("INSERT INTO post (Id, Name, Comment, Thread) "
@@ -74,7 +74,7 @@ function thread(req, res, id, imageid, name, subject, comment, spoiler){
                      + "VALUES (" + id + "," + name + "," + subject
                      + "," + comment + ",\"" + req.body.belong + "\"," + imageid + ")");
       db.connection.query("INSERT INTO image (OriginalName, Extention, Spoiler) VALUES (\""
-                      + req.file.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
+                      + req.body.originalname + "\",\"" + req.file.mimetype.split("/")[1] + "\","
                       + spoiler + ")");
       res.redirect("/" + req.body.belong + "/thread/" + id);
 }

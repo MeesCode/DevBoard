@@ -3,7 +3,7 @@ module.exports = {
   //database
   getHost : "localhost",
   getUser : "root",
-  getPassword : "toor",
+  getPassword : "merel4840",
   getDatabase : "DevBoard",
   
   //server
