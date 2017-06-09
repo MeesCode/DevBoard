@@ -8,32 +8,33 @@ does however try to incorporate as much features as possible that affect
 the end user directly. Which is something most other projects have, in my eyes,
 failed to achieve.
 
-[Working demo](http://mees.space)
-
 <h4>features:</h4>
-- jpeg, bmp, png, webp, svg, gif, mp4, ogg and WebM (w/ sound) support
-- catalog
-- homepage
-- rotating banner
-- greentexting
-- post linking
-- inline image expansion
-- post counter
-- quick reply
-- spoiler images
-- closed and/or stickied threads
+
+* jpeg, bmp, png, webp, svg, gif, mp4, ogg and WebM (w/ sound) support
+* catalog
+* homepage<
+* rotating banner
+* greentexting
+* post linking
+* inline image expansion
+* post counter
+* quick reply
+* spoiler images
+* closed and/or stickied threads
 
 <h4>planned features:</h4>
-- board linking
-- code tags
-- spoiler tags
-- moderator interface
-- user post deletion
+
+* board linking
+* code tags
+* spoiler tags
+* moderator interface
+* user post deletion
 
 <h4>installation:</h4>
-- make sure you have MySQL 5.6.5 and node.js (w/ node_legacy) installed
-- change the database login credentials in the settings.js file
-- make sure the right port is used, also in the settings.js file
+
+* make sure you have MySQL 5.6.5 and node.js (w/ node_legacy) installed
+* change the database login credentials in the settings.js file
+* make sure the right port is used, also in the settings.js file
 
  ```
 # npm install
